@@ -19,196 +19,81 @@
       --borde: #DCE4F0;
       --rojo-error: #C4432E;
     }
-
     * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      background: var(--fondo);
-      font-family: 'Inter', -apple-system, sans-serif;
-      color: var(--texto);
-    }
-
+    body { margin: 0; background: var(--fondo); font-family: 'Inter', -apple-system, sans-serif; color: var(--texto); }
     header {
-      background: var(--azul-profundo);
-      padding: 14px 28px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      background: var(--azul-profundo); padding: 14px 28px;
+      display: flex; align-items: center; justify-content: space-between;
     }
     header img { height: 30px; }
-
-    .usuario-chip {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 13px;
-      color: #E8F0FB;
-    }
+    .usuario-chip { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #E8F0FB; }
     .usuario-chip strong { color: #fff; font-weight: 600; }
     #btnSalir {
-      background: rgba(255,255,255,0.12);
-      border: 1px solid rgba(255,255,255,0.25);
-      color: #fff;
-      padding: 7px 14px;
-      border-radius: 4px;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
+      background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25);
+      color: #fff; padding: 7px 14px; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer;
     }
     #btnSalir:hover { background: rgba(255,255,255,0.22); }
-
-    main {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 36px 24px 60px;
-    }
-
+    main { max-width: 1100px; margin: 0 auto; padding: 36px 24px 60px; }
     .top-fila {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
-      gap: 16px;
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 24px; flex-wrap: wrap; gap: 16px;
     }
-
     .eyebrow {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--texto-suave);
-      margin: 0 0 6px;
+      font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600;
+      letter-spacing: 0.14em; text-transform: uppercase; color: var(--texto-suave); margin: 0 0 6px;
     }
     h1 { margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.01em; }
-
     #btnNueva {
-      background: var(--azul-marca);
-      color: #fff;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 4px;
-      font-size: 14px;
-      font-weight: 700;
-      cursor: pointer;
-      white-space: nowrap;
+      background: var(--azul-marca); color: #fff; border: none; padding: 12px 20px;
+      border-radius: 4px; font-size: 14px; font-weight: 700; cursor: pointer; white-space: nowrap;
     }
     #btnNueva:hover { background: var(--azul-profundo); }
-
     .tabla-wrap {
-      position: relative;
-      background: var(--superficie);
-      border-radius: 4px;
-      box-shadow: 0 16px 40px -24px rgba(0,54,108,0.3);
-      overflow: hidden;
+      position: relative; background: var(--superficie); border-radius: 4px;
+      box-shadow: 0 16px 40px -24px rgba(0,54,108,0.3); overflow: hidden;
     }
     .tabla-wrap::before, .tabla-wrap::after {
-      content: "";
-      position: absolute;
-      width: 20px;
-      height: 20px;
-      border: 3px solid var(--azul-marca);
-      z-index: 2;
+      content: ""; position: absolute; width: 20px; height: 20px; border: 3px solid var(--azul-marca); z-index: 2;
     }
     .tabla-wrap::before { top: -3px; left: -3px; border-right: none; border-bottom: none; }
     .tabla-wrap::after  { bottom: -3px; right: -3px; border-left: none; border-top: none; }
-
     table { width: 100%; border-collapse: collapse; }
     thead th {
-      text-align: left;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--texto-suave);
-      padding: 14px 16px;
-      border-bottom: 1.5px solid var(--borde);
-      background: #FAFCFF;
+      text-align: left; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--texto-suave); padding: 14px 16px; border-bottom: 1.5px solid var(--borde); background: #FAFCFF;
     }
-    tbody td {
-      padding: 14px 16px;
-      font-size: 13.5px;
-      border-bottom: 1px solid var(--borde);
-      vertical-align: middle;
-    }
+    tbody td { padding: 14px 16px; font-size: 13.5px; border-bottom: 1px solid var(--borde); vertical-align: middle; }
     tbody tr:last-child td { border-bottom: none; }
     tbody tr:hover { background: #F8FAFE; }
-
     .codigo { font-family: 'JetBrains Mono', monospace; font-weight: 600; color: var(--azul-profundo); }
-
-    .estado {
-      display: inline-block;
-      padding: 3px 10px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.02em;
-    }
+    .estado { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 0.02em; }
     .estado.Programada { background: rgba(217,130,43,0.12); color: var(--ambar); }
     .estado.Finalizada { background: rgba(46,158,109,0.12); color: var(--verde-seguridad); }
     .estado.EnCurso, .estado.En-curso { background: rgba(31,97,168,0.12); color: var(--azul-marca); }
-
-    .vacio, .cargando {
-      padding: 60px 20px;
-      text-align: center;
-      color: var(--texto-suave);
-      font-size: 14px;
-    }
-
-    /* Modal */
+    .vacio, .cargando { padding: 60px 20px; text-align: center; color: var(--texto-suave); font-size: 14px; }
     .overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(20,33,61,0.45);
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      z-index: 10;
+      display: none; position: fixed; inset: 0; background: rgba(20,33,61,0.45);
+      align-items: center; justify-content: center; padding: 20px; z-index: 10;
     }
     .overlay.activo { display: flex; }
-
-    .modal {
-      background: #fff;
-      width: 100%;
-      max-width: 440px;
-      border-radius: 4px;
-      padding: 28px;
-      position: relative;
-    }
+    .modal { background: #fff; width: 100%; max-width: 440px; border-radius: 4px; padding: 28px; position: relative; }
     .modal h2 { margin: 0 0 20px; font-size: 18px; font-weight: 800; }
     .campo { margin-bottom: 14px; }
-    .campo label {
-      display: block; font-size: 12px; font-weight: 600;
-      color: var(--texto-suave); margin-bottom: 6px;
-    }
+    .campo label { display: block; font-size: 12px; font-weight: 600; color: var(--texto-suave); margin-bottom: 6px; }
     .campo input {
       width: 100%; padding: 10px 12px; border: 1.5px solid var(--borde);
       border-radius: 4px; font-family: 'Inter', sans-serif; font-size: 14px;
     }
     .campo input:focus { outline: none; border-color: var(--azul-marca); }
-
     .modal-botones { display: flex; gap: 10px; margin-top: 20px; }
-    .modal-botones button {
-      flex: 1; padding: 11px; border-radius: 4px; font-size: 13.5px;
-      font-weight: 700; cursor: pointer; border: none;
-    }
+    .modal-botones button { flex: 1; padding: 11px; border-radius: 4px; font-size: 13.5px; font-weight: 700; cursor: pointer; border: none; }
     #btnCancelar { background: var(--fondo); color: var(--texto); }
     #btnGuardar { background: var(--azul-marca); color: #fff; }
     #btnGuardar:hover { background: var(--azul-profundo); }
     #btnGuardar:disabled { opacity: 0.6; cursor: wait; }
-
     .modal-mensaje {
-      display: none;
-      margin-top: 12px;
-      padding: 10px 12px;
-      border-radius: 4px;
-      font-size: 12.5px;
-      background: rgba(196,67,46,0.08);
-      color: var(--rojo-error);
-      border: 1px solid rgba(196,67,46,0.25);
+      display: none; margin-top: 12px; padding: 10px 12px; border-radius: 4px; font-size: 12.5px;
+      background: rgba(196,67,46,0.08); color: var(--rojo-error); border: 1px solid rgba(196,67,46,0.25);
     }
   </style>
 </head>
@@ -235,12 +120,7 @@
       <table>
         <thead>
           <tr>
-            <th>Código</th>
-            <th>Tema</th>
-            <th>Fecha</th>
-            <th>Instructor</th>
-            <th>Lugar</th>
-            <th>Estado</th>
+            <th>Código</th><th>Tema</th><th>Fecha</th><th>Instructor</th><th>Lugar</th><th>Estado</th>
           </tr>
         </thead>
         <tbody id="cuerpoTabla">
@@ -274,9 +154,7 @@
           <label for="fLugar">Lugar</label>
           <input type="text" id="fLugar" placeholder="Sala de Juntas">
         </div>
-
         <div class="modal-mensaje" id="modalMensaje"></div>
-
         <div class="modal-botones">
           <button type="button" id="btnCancelar">Cancelar</button>
           <button type="submit" id="btnGuardar">Crear</button>
@@ -286,12 +164,15 @@
   </div>
 
   <script>
-    const urlBase = "<?= urlBase ?>";
+    // ============================================================
+    // PEGA AQUÍ LA MISMA URL QUE PUSISTE EN index.html (termina en /exec)
+    // ============================================================
+    const API_URL = "PEGA_AQUI_TU_URL_EXEC";
 
     // --- Sesión ---
     const usuarioRaw = sessionStorage.getItem('usuario');
     if (!usuarioRaw) {
-      window.top.location.href = urlBase; // sin sesión, vuelve al login
+      window.location.href = 'index.html';
     } else {
       const usuario = JSON.parse(usuarioRaw);
       document.getElementById('nombreUsuario').textContent = usuario['Nombre Completo'] || 'Usuario';
@@ -299,13 +180,14 @@
 
     document.getElementById('btnSalir').addEventListener('click', function() {
       sessionStorage.removeItem('usuario');
-      window.top.location.href = urlBase;
+      window.location.href = 'index.html';
     });
 
     // --- Cargar capacitaciones ---
     function cargarCapacitaciones() {
-      google.script.run
-        .withSuccessHandler(function(respuesta) {
+      fetch(API_URL + '?action=listarCapacitaciones')
+        .then(function(r) { return r.json(); })
+        .then(function(respuesta) {
           const cuerpo = document.getElementById('cuerpoTabla');
 
           if (!respuesta.ok) {
@@ -332,11 +214,10 @@
               + '</tr>';
           }).join('');
         })
-        .withFailureHandler(function(error) {
+        .catch(function(error) {
           document.getElementById('cuerpoTabla').innerHTML =
-            '<tr><td colspan="6" class="vacio">Error inesperado: ' + error.message + '</td></tr>';
-        })
-        .apiListarCapacitaciones();
+            '<tr><td colspan="6" class="vacio">Error de conexión: ' + error.message + '</td></tr>';
+        });
     }
 
     cargarCapacitaciones();
@@ -360,19 +241,21 @@
       const mensaje = document.getElementById('modalMensaje');
       mensaje.style.display = 'none';
 
-      const datos = {
-        "Código": document.getElementById('fCodigo').value.trim(),
-        "Tema": document.getElementById('fTema').value.trim(),
-        "Fecha": document.getElementById('fFecha').value,
-        "Instructor": document.getElementById('fInstructor').value.trim(),
-        "Lugar": document.getElementById('fLugar').value.trim()
-      };
+      const params = new URLSearchParams({
+        action: 'crearCapacitacion',
+        codigo: document.getElementById('fCodigo').value.trim(),
+        tema: document.getElementById('fTema').value.trim(),
+        fecha: document.getElementById('fFecha').value,
+        instructor: document.getElementById('fInstructor').value.trim(),
+        lugar: document.getElementById('fLugar').value.trim()
+      });
 
       boton.disabled = true;
       boton.textContent = 'Creando...';
 
-      google.script.run
-        .withSuccessHandler(function(respuesta) {
+      fetch(API_URL + '?' + params.toString())
+        .then(function(r) { return r.json(); })
+        .then(function(respuesta) {
           boton.disabled = false;
           boton.textContent = 'Crear';
 
@@ -385,13 +268,12 @@
             mensaje.style.display = 'block';
           }
         })
-        .withFailureHandler(function(error) {
+        .catch(function(error) {
           boton.disabled = false;
           boton.textContent = 'Crear';
-          mensaje.textContent = 'Error inesperado: ' + error.message;
+          mensaje.textContent = 'Error de conexión: ' + error.message;
           mensaje.style.display = 'block';
-        })
-        .apiCrearCapacitacion(datos);
+        });
     });
   </script>
 
