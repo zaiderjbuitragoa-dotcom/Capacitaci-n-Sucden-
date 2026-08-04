@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Capacitaciones · Sistema de Capacitaciones</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --azul-marca: #1F61A8; --azul-glow: #4FA6FF; --cian: #00E5FF;
+    --fondo-0: #030711; --panel: rgba(12, 22, 41, 0.72); --panel-borde: rgba(79, 166, 255, 0.22);
+    --texto: #EAF2FF; --texto-suave: #7E93B8; --verde: #34D399; --rojo: #FF5D7A; --amarillo: #FBBF24;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100vh; }
+  body { font-family: 'Inter', -apple-system, sans-serif; color: var(--texto); background: var(--fondo-0); min-height: 100vh; position: relative; }
+  .malla {
+    position: fixed; inset: 0;
+    background-image: linear-gradient(rgba(79,166,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(79,166,255,0.06) 1px, transparent 1px);
+    background-size: 42px 42px;
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 80%);
+            mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 80%);
+    pointer-events: none;
+  }
+  .halo { position: fixed; border-radius: 50%; filter: blur(100px); pointer-events: none; opacity: 0.4; }
+  .halo-1 { width: 520px; height: 520px; top: -200px; left: -160px; background: radial-gradient(circle, rgba(31,97,168,0.55), transparent 70%); }
+  .halo-2 { width: 560px; height: 560px; bottom: -220px; right: -180px; background: radial-gradient(circle, rgba(0,229,255,0.15), transparent 70%); }
+
+  header {
+    position: relative; display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 28px; background: var(--panel); border-bottom: 1px solid var(--panel-borde); backdrop-filter: blur(18px);
+  }
+  .marca { display: flex; align-items: center; gap: 12px; }
+  .volver {
+    display: flex; align-items: center; gap: 6px; text-decoration: none; color: var(--texto-suave);
+    font-size: 13px; font-weight: 600; padding: 8px 12px; border-radius: 8px; transition: color .15s ease, background .15s ease;
+  }
+  .volver:hover { color: #fff; background: rgba(79,166,255,0.08); }
+  .marca-texto { display: flex; flex-direction: column; }
+  .marca-texto .nombre { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 15px; color: #fff; }
+  .marca-texto .sub { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--texto-suave); }
+  .usuario-box { display: flex; align-items: center; gap: 14px; }
+  .avatar {
+    width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--azul-glow), var(--cian));
+    display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: #071022; font-size: 13px;
+  }
+
+  .contenedor { position: relative; max-width: 1180px; margin: 0 auto; padding: 28px 24px 60px; }
+
+  .encabezado-seccion { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 22px; flex-wrap: wrap; gap: 14px; }
+  .encabezado-seccion .eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--cian); margin: 0 0 6px; }
+  .encabezado-seccion h1 { font-family: 'Space Grotesk', sans-serif; font-size: 24px; margin: 0; color: #fff; }
+
+  button.principal, .btn-nueva {
+    padding: 11px 20px; border: none; border-radius: 9px;
+    background: linear-gradient(135deg, var(--azul-marca), var(--azul-glow)); color: #fff;
+    font-family: 'Inter', sans-serif; font-size: 13.5px; font-weight: 700; cursor: pointer;
+    box-shadow: 0 10px 28px -10px rgba(31,97,168,0.65); transition: filter .15s ease, transform .1s ease;
+  }
+  button.principal:hover, .btn-nueva:hover { filter: brightness(1.1); }
+  button.principal:active, .btn-nueva:active { transform: scale(0.98); }
+  button.secundario {
+    padding: 11px 18px; border-radius: 9px; border: 1.5px solid var(--panel-borde);
+    background: rgba(255,255,255,0.03); color: var(--texto); font-family: 'Inter', sans-serif; font-size: 13.5px; font-weight: 600; cursor: pointer;
+  }
+  button.secundario:hover { border-color: var(--azul-glow); }
+
+  .filtros {
+    display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 18px;
+    padding: 16px; border-radius: 12px; background: var(--panel); border: 1px solid var(--panel-borde); backdrop-filter: blur(18px);
+  }
+  .filtros input, .filtros select {
+    padding: 9px 12px; border-radius: 8px; border: 1.5px solid rgba(79,166,255,0.18);
+    background: rgba(255,255,255,0.03); color: var(--texto); font-family: 'JetBrains Mono', monospace; font-size: 13px; min-width: 160px;
+  }
+  .filtros input::placeholder { color: rgba(126,147,184,0.55); }
+  .filtros input:focus, .filtros select:focus { outline: none; border-color: var(--azul-glow); }
+  .filtros select option { background: #0B1D33; }
+
+  .panel-tabla { border-radius: 12px; background: var(--panel); border: 1px solid var(--panel-borde); backdrop-filter: blur(18px); overflow: hidden; }
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    text-align: left; padding: 11px 18px; font-family: 'JetBrains Mono', monospace; font-size: 10.5px;
+    letter-spacing: .06em; text-transform: uppercase; color: var(--texto-suave); border-bottom: 1px solid var(--panel-borde);
+  }
+  tbody td { padding: 13px 18px; font-size: 13px; border-bottom: 1px solid rgba(79,166,255,0.08); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: rgba(79,166,255,0.04); }
+
+  .badge { display: inline-block; padding: 4px 10px; border-radius: 100px; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 600; }
+  .badge.programada { background: rgba(79,166,255,0.12); color: var(--azul-glow); border: 1px solid rgba(79,166,255,0.3); }
+  .badge.encurso { background: rgba(251,191,36,0.12); color: var(--amarillo); border: 1px solid rgba(251,191,36,0.3); }
+  .badge.finalizada { background: rgba(52,211,153,0.12); color: var(--verde); border: 1px solid rgba(52,211,153,0.3); }
+  .badge.cancelada { background: rgba(255,93,122,0.12); color: var(--rojo); border: 1px solid rgba(255,93,122,0.3); }
+
+  .btn-icono { background: none; border: none; color: var(--texto-suave); cursor: pointer; font-size: 15px; padding: 4px 7px; border-radius: 6px; }
+  .btn-icono:hover { color: var(--azul-glow); background: rgba(79,166,255,0.08); }
+
+  .vacio, .cargando { text-align: center; padding: 40px 20px; color: var(--texto-suave); font-size: 13px; }
+
+  /* ---------- Modal ---------- */
+  .overlay {
+    display: none; position: fixed; inset: 0; background: rgba(3,7,17,0.72); backdrop-filter: blur(4px);
+    align-items: center; justify-content: center; padding: 20px; z-index: 50;
+  }
+  .overlay.activo { display: flex; }
+  .modal {
+    width: 100%; max-width: 640px; max-height: 88vh; overflow-y: auto;
+    background: #0B1626; border: 1px solid var(--panel-borde); border-radius: 14px; padding: 28px 30px;
+    box-shadow: 0 30px 70px -25px rgba(0,0,0,0.7);
+    animation: aparecer .25s ease both;
+  }
+  @keyframes aparecer { from{opacity:0; transform: translateY(10px);} to{opacity:1; transform: translateY(0);} }
+  .modal h2 { font-family: 'Space Grotesk', sans-serif; font-size: 18px; margin: 0 0 20px; color: #fff; }
+  .campo { margin-bottom: 15px; }
+  .campo label { display: block; font-size: 12px; font-weight: 600; color: var(--texto-suave); margin-bottom: 6px; }
+  .fila-dos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .fila-tres { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .modal input, .modal select, .modal textarea {
+    width: 100%; padding: 11px 12px; border-radius: 8px; border: 1.5px solid rgba(79,166,255,0.18);
+    background: rgba(255,255,255,0.03); color: var(--texto); font-family: 'JetBrains Mono', monospace; font-size: 13.5px;
+  }
+  .modal textarea { font-family: 'Inter', sans-serif; resize: vertical; min-height: 60px; }
+  .modal select option { background: #0B1D33; }
+  .modal input:focus, .modal select:focus, .modal textarea:focus { outline: none; border-color: var(--azul-glow); }
+  .modal-acciones { display: flex; justify-content: flex-end; gap: 10px; margin-top: 22px; }
+  .mensaje-modal {
+    margin-top: 14px; padding: 10px 13px; border-radius: 8px; font-size: 12.5px; font-weight: 500; display: none; font-family: 'JetBrains Mono', monospace;
+  }
+  .mensaje-modal.error { display: block; background: rgba(255,93,122,0.09); color: var(--rojo); border: 1px solid rgba(255,93,122,0.28); }
+  .mensaje-modal.exito { display: block; background: rgba(52,211,153,0.09); color: var(--verde); border: 1px solid rgba(52,211,153,0.28); }
+
+  @media (max-width: 640px) {
+    .fila-dos, .fila-tres { grid-template-columns: 1fr; }
+    thead { display: none; }
+    table, tbody, tr, td { display: block; width: 100%; }
+    tbody tr { padding: 12px 0; border-bottom: 1px solid var(--panel-borde); }
+    tbody td { padding: 4px 18px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="malla"></div>
+<div class="halo halo-1"></div>
+<div class="halo halo-2"></div>
+
+<header>
+  <div class="marca">
+    <a class="volver" href="dashboard.html">← Dashboard</a>
+    <div class="marca-texto">
+      <span class="nombre">Sucden Servicios</span>
+      <span class="sub">Capacitaciones</span>
+    </div>
+  </div>
+  <div class="usuario-box">
+    <div class="avatar" id="avatarUsuario">—</div>
+  </div>
+</header>
+
+<div class="contenedor">
+
+  <div class="encabezado-seccion">
+    <div>
+      <p class="eyebrow">Gestión</p>
+      <h1>Capacitaciones</h1>
+    </div>
+    <button class="btn-nueva" id="btnNueva">+ Nueva capacitación</button>
+  </div>
+
+  <div class="filtros">
+    <input type="text" id="filtroTexto" placeholder="Buscar por tema o instructor...">
+    <select id="filtroEstado">
+      <option value="">Todos los estados</option>
+      <option value="Programada">Programada</option>
+      <option value="En Curso">En Curso</option>
+      <option value="Finalizada">Finalizada</option>
+      <option value="Cancelada">Cancelada</option>
+    </select>
+    <select id="filtroRegional">
+      <option value="">Todas las regionales</option>
+    </select>
+  </div>
+
+  <div class="panel-tabla">
+    <div id="contenedorTabla"><div class="cargando">Cargando capacitaciones…</div></div>
+  </div>
+
+</div>
+
+<!-- ---------- Modal Crear/Editar ---------- -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h2 id="tituloModal">Nueva capacitación</h2>
+    <form id="formCapacitacion">
+      <input type="hidden" id="idCapacitacion">
+
+      <div class="campo">
+        <label for="fTema">Tema *</label>
+        <input type="text" id="fTema" placeholder="Ej: Inducción SST" required>
+      </div>
+
+      <div class="campo">
+        <label for="fObjetivo">Objetivo</label>
+        <textarea id="fObjetivo" placeholder="¿Qué se busca lograr con esta capacitación?"></textarea>
+      </div>
+
+      <div class="fila-dos">
+        <div class="campo">
+          <label for="fInstructor">Instructor *</label>
+          <input type="text" id="fInstructor" placeholder="Ej: Juan Pérez" required>
+        </div>
+        <div class="campo">
+          <label for="fCodigo">Código</label>
+          <input type="text" id="fCodigo" placeholder="Se autogenera si lo dejas vacío">
+        </div>
+      </div>
+
+      <div class="fila-tres">
+        <div class="campo">
+          <label for="fFecha">Fecha *</label>
+          <input type="date" id="fFecha" required>
+        </div>
+        <div class="campo">
+          <label for="fHoraInicio">Hora inicio</label>
+          <input type="time" id="fHoraInicio">
+        </div>
+        <div class="campo">
+          <label for="fHoraFinal">Hora final</label>
+          <input type="time" id="fHoraFinal">
+        </div>
+      </div>
+
+      <div class="fila-dos">
+        <div class="campo">
+          <label for="fLugar">Lugar</label>
+          <input type="text" id="fLugar" placeholder="Ej: Sala de juntas / Zoom">
+        </div>
+        <div class="campo">
+          <label for="fModalidad">Modalidad</label>
+          <select id="fModalidad">
+            <option value="Presencial">Presencial</option>
+            <option value="Virtual">Virtual</option>
+            <option value="Mixta">Mixta</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="fila-tres">
+        <div class="campo">
+          <label for="fRegional">Regional</label>
+          <input type="text" id="fRegional" placeholder="Ej: Quindío">
+        </div>
+        <div class="campo">
+          <label for="fArea">Área</label>
+          <input type="text" id="fArea" placeholder="Ej: Operaciones">
+        </div>
+        <div class="campo">
+          <label for="fCupos">Cupos</label>
+          <input type="number" id="fCupos" min="0" placeholder="Ej: 25">
+        </div>
+      </div>
+
+      <div class="campo" id="campoEstado" style="display:none;">
+        <label for="fEstado">Estado</label>
+        <select id="fEstado">
+          <option value="Programada">Programada</option>
+          <option value="En Curso">En Curso</option>
+          <option value="Finalizada">Finalizada</option>
+          <option value="Cancelada">Cancelada</option>
+        </select>
+      </div>
+
+      <div class="campo">
+        <label for="fObservaciones">Observaciones</label>
+        <textarea id="fObservaciones" placeholder="Notas adicionales"></textarea>
+      </div>
+
+      <div class="modal-acciones">
+        <button type="button" class="secundario" id="btnCancelar">Cancelar</button>
+        <button type="submit" class="principal" id="btnGuardar">Guardar</button>
+      </div>
+      <div id="mensajeModal" class="mensaje-modal"></div>
+    </form>
+  </div>
+</div>
+
+<script>
+  // ============================================================
+  // PEGA AQUÍ LA MISMA URL DE TU DESPLIEGUE (idéntica a login.html)
+  // ============================================================
+  const API_URL = "https://script.google.com/macros/s/AKfycby5AviUlXW6hDNvvGWXRdE70C22TZZfGZf-hVKDCJednS513G4F8QN-aKeXUZJBjNNI/exec";
+
+  // ---------- Sesión ----------
+  const token = sessionStorage.getItem('token');
+  const usuarioRaw = sessionStorage.getItem('usuario');
+  if (!token || !usuarioRaw) { window.location.href = 'login.html'; }
+  const usuario = JSON.parse(usuarioRaw || '{}');
+  document.getElementById('avatarUsuario').textContent = (usuario['Nombre Completo'] || '?').trim().charAt(0).toUpperCase();
+
+  const ROL_COLABORADOR = 'Colaborador';
+  if (usuario['Rol'] === ROL_COLABORADOR) {
+    document.getElementById('btnNueva').style.display = 'none';
+  }
+
+  // ---------- Llamada genérica a la API ----------
+  function llamarAPI(accion, datos) {
+    const body = Object.assign({ accion: accion, token: token }, datos || {});
+    return fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(body)
+    }).then(function (r) { return r.json(); })
+      .then(function (respuesta) {
+        if (!respuesta.success && /no autorizado/i.test(respuesta.message || '')) {
+          sessionStorage.removeItem('token');
+          sessionStorage.removeItem('usuario');
+          window.location.href = 'login.html';
+        }
+        return respuesta;
+      });
+  }
+
+  let capacitacionesCache = [];
+
+  // ---------- Utilidades ----------
+  function formatearFechaCorta(valor) {
+    if (!valor) return '—';
+    const f = new Date(valor);
+    if (isNaN(f.getTime())) return String(valor);
+    return f.toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' });
+  }
+  function fechaParaInput(valor) {
+    if (!valor) return '';
+    const f = new Date(valor);
+    if (isNaN(f.getTime())) return '';
+    const mm = String(f.getMonth() + 1).padStart(2, '0');
+    const dd = String(f.getDate()).padStart(2, '0');
+    return f.getFullYear() + '-' + mm + '-' + dd;
+  }
+  function claseBadge(estado) {
+    switch (String(estado || '').toLowerCase()) {
+      case 'programada': return 'programada';
+      case 'en curso': return 'encurso';
+      case 'finalizada': return 'finalizada';
+      case 'cancelada': return 'cancelada';
+      default: return 'programada';
+    }
+  }
+
+  // ---------- Cargar y pintar tabla ----------
+  function cargarCapacitaciones() {
+    llamarAPI('listarCapacitaciones').then(function (respuesta) {
+      const cont = document.getElementById('contenedorTabla');
+      if (!respuesta.success) {
+        cont.innerHTML = '<div class="vacio">Error al cargar: ' + (respuesta.message || '') + '</div>';
+        return;
+      }
+      capacitacionesCache = respuesta.data || [];
+      poblarFiltroRegional(capacitacionesCache);
+      pintarTabla();
+    }).catch(function (error) {
+      document.getElementById('contenedorTabla').innerHTML = '<div class="vacio">Error de conexión: ' + error.message + '</div>';
+    });
+  }
+
+  function poblarFiltroRegional(lista) {
+    const select = document.getElementById('filtroRegional');
+    const actuales = new Set(Array.from(select.options).map(function (o) { return o.value; }));
+    const regionales = Array.from(new Set(lista.map(function (c) { return c['Regional']; }).filter(Boolean)));
+    regionales.forEach(function (r) {
+      if (!actuales.has(r)) {
+        const opt = document.createElement('option');
+        opt.value = r; opt.textContent = r;
+        select.appendChild(opt);
+      }
+    });
+  }
+
+  function pintarTabla() {
+    const cont = document.getElementById('contenedorTabla');
+    const texto = document.getElementById('filtroTexto').value.trim().toLowerCase();
+    const estado = document.getElementById('filtroEstado').value;
+    const regional = document.getElementById('filtroRegional').value;
+
+    let lista = capacitacionesCache.slice();
+
+    if (texto) {
+      lista = lista.filter(function (c) {
+        return (c['Tema'] || '').toLowerCase().includes(texto) || (c['Instructor'] || '').toLowerCase().includes(texto);
+      });
+    }
+    if (estado) lista = lista.filter(function (c) { return c['Estado'] === estado; });
+    if (regional) lista = lista.filter(function (c) { return c['Regional'] === regional; });
+
+    lista.sort(function (a, b) { return new Date(b['Fecha']) - new Date(a['Fecha']); });
+
+    if (!lista.length) {
+      cont.innerHTML = '<div class="vacio">No hay capacitaciones que coincidan con el filtro.</div>';
+      return;
+    }
+
+    let filas = '';
+    lista.forEach(function (c) {
+      filas += '<tr>' +
+        '<td>' + (c['Código'] || c['ID Capacitación'] || '') + '</td>' +
+        '<td>' + (c['Tema'] || '') + '</td>' +
+        '<td>' + (c['Instructor'] || '') + '</td>' +
+        '<td>' + formatearFechaCorta(c['Fecha']) + '</td>' +
+        '<td>' + (c['Regional'] || '—') + '</td>' +
+        '<td>' + (c['Cupos'] || '—') + '</td>' +
+        '<td><span class="badge ' + claseBadge(c['Estado']) + '">' + (c['Estado'] || '—') + '</span></td>' +
+        '<td>' +
+          '<button class="btn-icono" title="Editar" data-editar="' + c['ID Capacitación'] + '">✏️</button>' +
+          '<button class="btn-icono" title="Ver asistentes" data-asistentes="' + c['ID Capacitación'] + '">👥</button>' +
+        '</td>' +
+      '</tr>';
+    });
+
+    cont.innerHTML =
+      '<table>' +
+        '<thead><tr><th>Código</th><th>Tema</th><th>Instructor</th><th>Fecha</th><th>Regional</th><th>Cupos</th><th>Estado</th><th></th></tr></thead>' +
+        '<tbody>' + filas + '</tbody>' +
+      '</table>';
+
+    cont.querySelectorAll('[data-editar]').forEach(function (btn) {
+      btn.addEventListener('click', function () { abrirModalEditar(btn.dataset.editar); });
+    });
+    cont.querySelectorAll('[data-asistentes]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        window.location.href = 'asistentes.html?cap=' + encodeURIComponent(btn.dataset.asistentes);
+      });
+    });
+  }
+
+  document.getElementById('filtroTexto').addEventListener('input', pintarTabla);
+  document.getElementById('filtroEstado').addEventListener('change', pintarTabla);
+  document.getElementById('filtroRegional').addEventListener('change', pintarTabla);
+
+  // ---------- Modal ----------
+  const overlay = document.getElementById('overlay');
+  const form = document.getElementById('formCapacitacion');
+  const mensajeModal = document.getElementById('mensajeModal');
+
+  function limpiarFormulario() {
+    form.reset();
+    document.getElementById('idCapacitacion').value = '';
+    document.getElementById('campoEstado').style.display = 'none';
+    mensajeModal.className = 'mensaje-modal';
+    mensajeModal.textContent = '';
+  }
+
+  document.getElementById('btnNueva').addEventListener('click', function () {
+    limpiarFormulario();
+    document.getElementById('tituloModal').textContent = 'Nueva capacitación';
+    overlay.classList.add('activo');
+  });
+
+  document.getElementById('btnCancelar').addEventListener('click', function () {
+    overlay.classList.remove('activo');
+  });
+  overlay.addEventListener('click', function (e) {
+    if (e.target === overlay) overlay.classList.remove('activo');
+  });
+
+  function abrirModalEditar(id) {
+    const cap = capacitacionesCache.find(function (c) { return c['ID Capacitación'] === id; });
+    if (!cap) return;
+
+    limpiarFormulario();
+    document.getElementById('tituloModal').textContent = 'Editar capacitación';
+    document.getElementById('idCapacitacion').value = id;
+    document.getElementById('fTema').value = cap['Tema'] || '';
+    document.getElementById('fObjetivo').value = cap['Objetivo'] || '';
+    document.getElementById('fInstructor').value = cap['Instructor'] || '';
+    document.getElementById('fCodigo').value = cap['Código'] || '';
+    document.getElementById('fFecha').value = fechaParaInput(cap['Fecha']);
+    document.getElementById('fHoraInicio').value = cap['Hora Inicio'] || '';
+    document.getElementById('fHoraFinal').value = cap['Hora Final'] || '';
+    document.getElementById('fLugar').value = cap['Lugar'] || '';
+    document.getElementById('fModalidad').value = cap['Modalidad'] || 'Presencial';
+    document.getElementById('fRegional').value = cap['Regional'] || '';
+    document.getElementById('fArea').value = cap['Área'] || '';
+    document.getElementById('fCupos').value = cap['Cupos'] || '';
+    document.getElementById('fObservaciones').value = cap['Observaciones'] || '';
+    document.getElementById('fEstado').value = cap['Estado'] || 'Programada';
+    document.getElementById('campoEstado').style.display = 'block';
+
+    overlay.classList.add('activo');
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    const id = document.getElementById('idCapacitacion').value;
+    const btnGuardar = document.getElementById('btnGuardar');
+
+    const datos = {
+      'Tema': document.getElementById('fTema').value.trim(),
+      'Objetivo': document.getElementById('fObjetivo').value.trim(),
+      'Instructor': document.getElementById('fInstructor').value.trim(),
+      'Código': document.getElementById('fCodigo').value.trim(),
+      'Fecha': document.getElementById('fFecha').value,
+      'Hora Inicio': document.getElementById('fHoraInicio').value,
+      'Hora Final': document.getElementById('fHoraFinal').value,
+      'Lugar': document.getElementById('fLugar').value.trim(),
+      'Modalidad': document.getElementById('fModalidad').value,
+      'Regional': document.getElementById('fRegional').value.trim(),
+      'Área': document.getElementById('fArea').value.trim(),
+      'Cupos': document.getElementById('fCupos').value,
+      'Observaciones': document.getElementById('fObservaciones').value.trim()
+    };
+
+    if (!datos['Tema'] || !datos['Instructor'] || !datos['Fecha']) {
+      mensajeModal.className = 'mensaje-modal error';
+      mensajeModal.textContent = 'Tema, instructor y fecha son obligatorios.';
+      return;
+    }
+
+    btnGuardar.disabled = true;
+    btnGuardar.textContent = 'Guardando...';
+
+    const promesa = id
+      ? llamarAPI('actualizarCapacitacion', { id: id, cambios: Object.assign(datos, { 'Estado': document.getElementById('fEstado').value }) })
+      : llamarAPI('crearCapacitacion', datos);
+
+    promesa.then(function (respuesta) {
+      btnGuardar.disabled = false;
+      btnGuardar.textContent = 'Guardar';
+
+      if (respuesta.success) {
+        mensajeModal.className = 'mensaje-modal exito';
+        mensajeModal.textContent = id ? 'Capacitación actualizada.' : 'Capacitación creada.';
+        cargarCapacitaciones();
+        setTimeout(function () { overlay.classList.remove('activo'); }, 700);
+      } else {
+        mensajeModal.className = 'mensaje-modal error';
+        mensajeModal.textContent = respuesta.message || 'No se pudo guardar.';
+      }
+    }).catch(function (error) {
+      btnGuardar.disabled = false;
+      btnGuardar.textContent = 'Guardar';
+      mensajeModal.className = 'mensaje-modal error';
+      mensajeModal.textContent = 'Error de conexión: ' + error.message;
+    });
+  });
+
+  cargarCapacitaciones();
+</script>
+
+</body>
+</html>
