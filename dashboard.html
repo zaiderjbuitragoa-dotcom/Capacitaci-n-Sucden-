@@ -1,370 +1,388 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Dashboard - Capacitaciones</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --azul-marca: #1F61A8;
-      --azul-profundo: #00366C;
-      --fondo: #F3F6FB;
-      --superficie: #FFFFFF;
-      --texto: #14213D;
-      --texto-suave: #5B6B85;
-      --verde-seguridad: #2E9E6D;
-      --ambar: #D9822B;
-      --borde: #DCE4F0;
-      --rojo-error: #C4432E;
-    }
-    * { box-sizing: border-box; }
-    body { margin: 0; background: var(--fondo); font-family: 'Inter', -apple-system, sans-serif; color: var(--texto); }
-    header {
-      background: var(--azul-profundo); padding: 14px 28px;
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    header img { height: 30px; }
-    .usuario-chip { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #E8F0FB; }
-    .usuario-chip strong { color: #fff; font-weight: 600; }
-    #btnSalir {
-      background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25);
-      color: #fff; padding: 7px 14px; border-radius: 4px; font-size: 12px; font-weight: 600; cursor: pointer;
-    }
-    #btnSalir:hover { background: rgba(255,255,255,0.22); }
-    main { max-width: 1100px; margin: 0 auto; padding: 36px 24px 60px; }
-    .top-fila {
-      display: flex; align-items: flex-end; justify-content: space-between;
-      margin-bottom: 24px; flex-wrap: wrap; gap: 16px;
-    }
-    .eyebrow {
-      font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600;
-      letter-spacing: 0.14em; text-transform: uppercase; color: var(--texto-suave); margin: 0 0 6px;
-    }
-    h1 { margin: 0; font-size: 26px; font-weight: 800; letter-spacing: -0.01em; }
-    #btnNueva {
-      background: var(--azul-marca); color: #fff; border: none; padding: 12px 20px;
-      border-radius: 4px; font-size: 14px; font-weight: 700; cursor: pointer; white-space: nowrap;
-    }
-    #btnNueva:hover { background: var(--azul-profundo); }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard · Sistema de Capacitaciones</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --azul-marca: #1F61A8;
+    --azul-glow: #4FA6FF;
+    --cian: #00E5FF;
+    --fondo-0: #030711;
+    --fondo-1: #071022;
+    --panel: rgba(12, 22, 41, 0.72);
+    --panel-borde: rgba(79, 166, 255, 0.22);
+    --texto: #EAF2FF;
+    --texto-suave: #7E93B8;
+    --verde: #34D399;
+    --rojo: #FF5D7A;
+    --amarillo: #FBBF24;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100vh; }
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: var(--texto);
+    background: var(--fondo-0);
+    min-height: 100vh;
+    position: relative;
+  }
+  .malla {
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(79,166,255,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(79,166,255,0.06) 1px, transparent 1px);
+    background-size: 42px 42px;
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 80%);
+            mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 80%);
+    pointer-events: none;
+  }
+  .halo { position: fixed; border-radius: 50%; filter: blur(100px); pointer-events: none; opacity: 0.45; }
+  .halo-1 { width: 520px; height: 520px; top: -200px; left: -160px; background: radial-gradient(circle, rgba(31,97,168,0.55), transparent 70%); }
+  .halo-2 { width: 560px; height: 560px; bottom: -220px; right: -180px; background: radial-gradient(circle, rgba(0,229,255,0.15), transparent 70%); }
 
-    .rol-chip {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      padding: 2px 8px;
-      border-radius: 4px;
-      background: rgba(255,255,255,0.14);
-      color: #E8F0FB;
-      margin-left: 8px;
-    }
+  /* ---------- Header ---------- */
+  header {
+    position: relative;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 28px;
+    background: var(--panel);
+    border-bottom: 1px solid var(--panel-borde);
+    backdrop-filter: blur(18px);
+  }
+  .marca { display: flex; align-items: center; gap: 12px; }
+  .marca .punto-vivo {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--verde); box-shadow: 0 0 8px 1px var(--verde);
+    animation: latido 1.8s ease-in-out infinite;
+  }
+  @keyframes latido { 0%,100%{opacity:1;} 50%{opacity:.35;} }
+  .marca-texto { display: flex; flex-direction: column; }
+  .marca-texto .nombre { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 15px; color: #fff; }
+  .marca-texto .sub { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--texto-suave); }
 
-    .btn-confirmar {
-      background: var(--azul-marca);
-      color: #fff;
-      border: none;
-      padding: 7px 14px;
-      border-radius: 4px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-    .btn-confirmar:hover { background: var(--azul-profundo); }
-    .btn-confirmar:disabled { background: var(--verde-seguridad); opacity: 0.85; cursor: default; }
-    .tabla-wrap {
-      position: relative; background: var(--superficie); border-radius: 4px;
-      box-shadow: 0 16px 40px -24px rgba(0,54,108,0.3); overflow: hidden;
-    }
-    .tabla-wrap::before, .tabla-wrap::after {
-      content: ""; position: absolute; width: 20px; height: 20px; border: 3px solid var(--azul-marca); z-index: 2;
-    }
-    .tabla-wrap::before { top: -3px; left: -3px; border-right: none; border-bottom: none; }
-    .tabla-wrap::after  { bottom: -3px; right: -3px; border-left: none; border-top: none; }
-    table { width: 100%; border-collapse: collapse; }
-    thead th {
-      text-align: left; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
-      color: var(--texto-suave); padding: 14px 16px; border-bottom: 1.5px solid var(--borde); background: #FAFCFF;
-    }
-    tbody td { padding: 14px 16px; font-size: 13.5px; border-bottom: 1px solid var(--borde); vertical-align: middle; }
-    tbody tr:last-child td { border-bottom: none; }
-    tbody tr:hover { background: #F8FAFE; }
-    .codigo { font-family: 'JetBrains Mono', monospace; font-weight: 600; color: var(--azul-profundo); }
-    .estado { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 0.02em; }
-    .estado.Programada { background: rgba(217,130,43,0.12); color: var(--ambar); }
-    .estado.Finalizada { background: rgba(46,158,109,0.12); color: var(--verde-seguridad); }
-    .estado.EnCurso, .estado.En-curso { background: rgba(31,97,168,0.12); color: var(--azul-marca); }
-    .vacio, .cargando { padding: 60px 20px; text-align: center; color: var(--texto-suave); font-size: 14px; }
-    .overlay {
-      display: none; position: fixed; inset: 0; background: rgba(20,33,61,0.45);
-      align-items: center; justify-content: center; padding: 20px; z-index: 10;
-    }
-    .overlay.activo { display: flex; }
-    .modal { background: #fff; width: 100%; max-width: 440px; border-radius: 4px; padding: 28px; position: relative; }
-    .modal h2 { margin: 0 0 20px; font-size: 18px; font-weight: 800; }
-    .campo { margin-bottom: 14px; }
-    .campo label { display: block; font-size: 12px; font-weight: 600; color: var(--texto-suave); margin-bottom: 6px; }
-    .campo input {
-      width: 100%; padding: 10px 12px; border: 1.5px solid var(--borde);
-      border-radius: 4px; font-family: 'Inter', sans-serif; font-size: 14px;
-    }
-    .campo input:focus { outline: none; border-color: var(--azul-marca); }
-    .modal-botones { display: flex; gap: 10px; margin-top: 20px; }
-    .modal-botones button { flex: 1; padding: 11px; border-radius: 4px; font-size: 13.5px; font-weight: 700; cursor: pointer; border: none; }
-    #btnCancelar { background: var(--fondo); color: var(--texto); }
-    #btnGuardar { background: var(--azul-marca); color: #fff; }
-    #btnGuardar:hover { background: var(--azul-profundo); }
-    #btnGuardar:disabled { opacity: 0.6; cursor: wait; }
-    .modal-mensaje {
-      display: none; margin-top: 12px; padding: 10px 12px; border-radius: 4px; font-size: 12.5px;
-      background: rgba(196,67,46,0.08); color: var(--rojo-error); border: 1px solid rgba(196,67,46,0.25);
-    }
-  </style>
+  .usuario-box { display: flex; align-items: center; gap: 14px; }
+  .usuario-info { text-align: right; }
+  .usuario-info .nom { font-size: 13px; font-weight: 600; color: #fff; }
+  .usuario-info .rol {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--cian);
+  }
+  .avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--azul-glow), var(--cian));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: #071022; font-size: 14px;
+  }
+  .btn-salir {
+    padding: 9px 16px; border-radius: 8px; border: 1.5px solid rgba(255,93,122,0.3);
+    background: rgba(255,93,122,0.08); color: var(--rojo);
+    font-family: 'Inter', sans-serif; font-size: 12.5px; font-weight: 600; cursor: pointer;
+    transition: background .15s ease;
+  }
+  .btn-salir:hover { background: rgba(255,93,122,0.16); }
+
+  /* ---------- Layout ---------- */
+  .contenedor { position: relative; max-width: 1180px; margin: 0 auto; padding: 28px 24px 60px; }
+
+  .encabezado-seccion { margin-bottom: 24px; }
+  .encabezado-seccion .eyebrow {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .16em;
+    text-transform: uppercase; color: var(--cian); margin: 0 0 6px;
+  }
+  .encabezado-seccion h1 { font-family: 'Space Grotesk', sans-serif; font-size: 24px; margin: 0; color: #fff; }
+
+  /* ---------- KPIs ---------- */
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 30px; }
+  .kpi {
+    position: relative;
+    padding: 20px; border-radius: 12px;
+    background: var(--panel); border: 1px solid var(--panel-borde);
+    backdrop-filter: blur(18px); overflow: hidden;
+  }
+  .kpi .icono { font-size: 20px; margin-bottom: 10px; opacity: .9; }
+  .kpi .valor { font-family: 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 700; color: #fff; }
+  .kpi .etiqueta { font-size: 12px; color: var(--texto-suave); margin-top: 4px; }
+  .kpi.acento::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+    background: linear-gradient(180deg, var(--azul-glow), var(--cian));
+  }
+
+  /* ---------- Accesos rápidos ---------- */
+  .accesos { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 30px; }
+  .acceso {
+    display: flex; align-items: center; gap: 16px;
+    padding: 20px; border-radius: 12px;
+    background: var(--panel); border: 1px solid var(--panel-borde);
+    text-decoration: none; color: var(--texto);
+    transition: border-color .15s ease, transform .15s ease;
+  }
+  .acceso:hover { border-color: var(--azul-glow); transform: translateY(-2px); }
+  .acceso .icono-caja {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: linear-gradient(135deg, rgba(79,166,255,.18), rgba(0,229,255,.10));
+    display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;
+  }
+  .acceso .titulo { font-weight: 700; font-size: 14.5px; color: #fff; margin-bottom: 2px; }
+  .acceso .desc { font-size: 12px; color: var(--texto-suave); }
+
+  /* ---------- Tabla ---------- */
+  .panel-tabla {
+    border-radius: 12px; background: var(--panel); border: 1px solid var(--panel-borde);
+    backdrop-filter: blur(18px); overflow: hidden;
+  }
+  .panel-tabla .cab {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 20px; border-bottom: 1px solid var(--panel-borde);
+  }
+  .panel-tabla .cab h2 { font-family: 'Space Grotesk', sans-serif; font-size: 15.5px; margin: 0; color: #fff; }
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    text-align: left; padding: 11px 20px;
+    font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--texto-suave); border-bottom: 1px solid var(--panel-borde);
+  }
+  tbody td { padding: 13px 20px; font-size: 13px; border-bottom: 1px solid rgba(79,166,255,0.08); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: rgba(79,166,255,0.04); }
+
+  .badge {
+    display: inline-block; padding: 4px 10px; border-radius: 100px;
+    font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 600; letter-spacing: .03em;
+  }
+  .badge.programada { background: rgba(79,166,255,0.12); color: var(--azul-glow); border: 1px solid rgba(79,166,255,0.3); }
+  .badge.encurso { background: rgba(251,191,36,0.12); color: var(--amarillo); border: 1px solid rgba(251,191,36,0.3); }
+  .badge.finalizada { background: rgba(52,211,153,0.12); color: var(--verde); border: 1px solid rgba(52,211,153,0.3); }
+  .badge.cancelada { background: rgba(255,93,122,0.12); color: var(--rojo); border: 1px solid rgba(255,93,122,0.3); }
+
+  .vacio { text-align: center; padding: 40px 20px; color: var(--texto-suave); font-size: 13px; }
+  .cargando { text-align: center; padding: 40px 20px; color: var(--texto-suave); font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+
+  @media (max-width: 900px) {
+    .kpis { grid-template-columns: repeat(2, 1fr); }
+    .accesos { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 560px) {
+    .kpis { grid-template-columns: 1fr 1fr; }
+    thead { display: none; }
+    table, tbody, tr, td { display: block; width: 100%; }
+    tbody tr { padding: 12px 0; border-bottom: 1px solid var(--panel-borde); }
+    tbody td { padding: 4px 20px; }
+  }
+</style>
 </head>
 <body>
 
-  <header>
-    <img src="data:image/png;base64,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" alt="S&D Sucden">
-    <div class="usuario-chip">
-      <span>Hola, <strong id="nombreUsuario">—</strong><span class="rol-chip" id="rolUsuario"></span></span>
-      <button id="btnSalir">Salir</button>
-    </div>
-  </header>
+<div class="malla"></div>
+<div class="halo halo-1"></div>
+<div class="halo halo-2"></div>
 
-  <main>
-    <div class="top-fila">
-      <div>
-        <p class="eyebrow">Sistema de Capacitaciones</p>
-        <h1>Capacitaciones</h1>
-      </div>
-      <button id="btnNueva">+ Nueva capacitación</button>
+<header>
+  <div class="marca">
+    <span class="punto-vivo"></span>
+    <div class="marca-texto">
+      <span class="nombre">Sucden Servicios</span>
+      <span class="sub">Sistema de Capacitaciones</span>
     </div>
-
-    <div class="tabla-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Código</th><th>Tema</th><th>Fecha</th><th>Instructor</th><th>Lugar</th><th>Estado</th><th id="thAccion" style="display:none;">Acción</th>
-          </tr>
-        </thead>
-        <tbody id="cuerpoTabla">
-          <tr><td colspan="7" class="cargando">Cargando capacitaciones...</td></tr>
-        </tbody>
-      </table>
+  </div>
+  <div class="usuario-box">
+    <div class="usuario-info">
+      <div class="nom" id="nombreUsuario">—</div>
+      <div class="rol" id="rolUsuario">—</div>
     </div>
-  </main>
+    <div class="avatar" id="avatarUsuario">—</div>
+    <button class="btn-salir" id="btnSalir">Salir</button>
+  </div>
+</header>
 
-  <div class="overlay" id="overlay">
-    <div class="modal">
-      <h2>Nueva capacitación</h2>
-      <form id="formNueva">
-        <div class="campo">
-          <label for="fCodigo">Código</label>
-          <input type="text" id="fCodigo" placeholder="CAP-000010" required>
-        </div>
-        <div class="campo">
-          <label for="fTema">Tema</label>
-          <input type="text" id="fTema" placeholder="Seguridad Industrial" required>
-        </div>
-        <div class="campo">
-          <label for="fFecha">Fecha</label>
-          <input type="date" id="fFecha" required>
-        </div>
-        <div class="campo">
-          <label for="fInstructor">Instructor</label>
-          <input type="text" id="fInstructor" placeholder="Nombre del instructor">
-        </div>
-        <div class="campo">
-          <label for="fLugar">Lugar</label>
-          <input type="text" id="fLugar" placeholder="Sala de Juntas">
-        </div>
-        <div class="modal-mensaje" id="modalMensaje"></div>
-        <div class="modal-botones">
-          <button type="button" id="btnCancelar">Cancelar</button>
-          <button type="submit" id="btnGuardar">Crear</button>
-        </div>
-      </form>
+<div class="contenedor">
+
+  <div class="encabezado-seccion">
+    <p class="eyebrow">Panel general</p>
+    <h1>Hola, <span id="saludoNombre">—</span></h1>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi acento">
+      <div class="icono">📚</div>
+      <div class="valor" id="kpiTotal">—</div>
+      <div class="etiqueta">Capacitaciones totales</div>
+    </div>
+    <div class="kpi acento">
+      <div class="icono">🗓️</div>
+      <div class="valor" id="kpiProgramadas">—</div>
+      <div class="etiqueta">Programadas</div>
+    </div>
+    <div class="kpi acento">
+      <div class="icono">✅</div>
+      <div class="valor" id="kpiFinalizadas">—</div>
+      <div class="etiqueta">Finalizadas</div>
+    </div>
+    <div class="kpi acento">
+      <div class="icono">👥</div>
+      <div class="valor" id="kpiUsuarios">—</div>
+      <div class="etiqueta">Usuarios activos</div>
     </div>
   </div>
 
-  <script>
-    // ============================================================
-    // PEGA AQUÍ LA MISMA URL QUE PUSISTE EN index.html (termina en /exec)
-    // ============================================================
-    const API_URL = "https://script.google.com/macros/s/AKfycby5AviUlXW6hDNvvGWXRdE70C22TZZfGZf-hVKDCJednS513G4F8QN-aKeXUZJBjNNI/exec";
+  <div class="accesos">
+    <a class="acceso" href="capacitaciones.html">
+      <div class="icono-caja">📋</div>
+      <div>
+        <div class="titulo">Gestionar Capacitaciones</div>
+        <div class="desc">Crear, editar y programar capacitaciones</div>
+      </div>
+    </a>
+    <a class="acceso" href="asistentes.html">
+      <div class="icono-caja">🧾</div>
+      <div>
+        <div class="titulo">Registro de Asistencia</div>
+        <div class="desc">Marcar entrada/salida, firmas y evidencias</div>
+      </div>
+    </a>
+  </div>
 
-    // --- Sesión y rol ---
-    const usuarioRaw = sessionStorage.getItem('usuario');
-    let usuario = null;
-    let esAdmin = false;
+  <div class="panel-tabla">
+    <div class="cab">
+      <h2>Últimas capacitaciones</h2>
+    </div>
+    <div id="contenedorTabla">
+      <div class="cargando">Cargando información…</div>
+    </div>
+  </div>
 
-    if (!usuarioRaw) {
-      window.location.href = 'index.html';
-    } else {
-      usuario = JSON.parse(usuarioRaw);
-      esAdmin = (usuario['Rol'] || '').trim() === 'Admin';
+</div>
 
-      document.getElementById('nombreUsuario').textContent = usuario['Nombre Completo'] || 'Usuario';
-      document.getElementById('rolUsuario').textContent = usuario['Rol'] || 'Colaborador';
+<script>
+  // ============================================================
+  // PEGA AQUÍ LA MISMA URL DE TU DESPLIEGUE (idéntica a login.html)
+  // ============================================================
+  const API_URL = "https://script.google.com/macros/s/AKfycby5AviUlXW6hDNvvGWXRdE70C22TZZfGZf-hVKDCJednS513G4F8QN-aKeXUZJBjNNI/exec";
 
-      if (esAdmin) {
-        // Admin: ve todo, incluyendo crear capacitaciones
-        document.getElementById('btnNueva').style.display = '';
-        document.getElementById('thAccion').style.display = 'none';
-      } else {
-        // Resto de roles: solo lectura + confirmar su propia asistencia
-        document.getElementById('btnNueva').style.display = 'none';
-        document.getElementById('thAccion').style.display = '';
+  // ---------- Sesión ----------
+  const token = sessionStorage.getItem('token');
+  const usuarioRaw = sessionStorage.getItem('usuario');
+
+  if (!token || !usuarioRaw) {
+    window.location.href = 'login.html';
+  }
+
+  const usuario = JSON.parse(usuarioRaw);
+
+  document.getElementById('nombreUsuario').textContent = usuario['Nombre Completo'] || '—';
+  document.getElementById('rolUsuario').textContent = usuario['Rol'] || '—';
+  document.getElementById('saludoNombre').textContent = (usuario['Nombre Completo'] || '').split(' ')[0] || 'usuario';
+  document.getElementById('avatarUsuario').textContent = (usuario['Nombre Completo'] || '?').trim().charAt(0).toUpperCase();
+
+  document.getElementById('btnSalir').addEventListener('click', function () {
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('usuario');
+    window.location.href = 'login.html';
+  });
+
+  // ---------- Llamada genérica a la API (con token) ----------
+  function llamarAPI(accion, datos) {
+    const body = Object.assign({ accion: accion, token: token }, datos || {});
+    return fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(body)
+    }).then(function (r) { return r.json(); })
+      .then(function (respuesta) {
+        if (!respuesta.success && /no autorizado/i.test(respuesta.message || '')) {
+          sessionStorage.removeItem('token');
+          sessionStorage.removeItem('usuario');
+          window.location.href = 'login.html';
+        }
+        return respuesta;
+      });
+  }
+
+  // ---------- Utilidades de formato ----------
+  function formatearFechaCorta(valor) {
+    if (!valor) return '—';
+    const f = new Date(valor);
+    if (isNaN(f.getTime())) return String(valor);
+    return f.toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' });
+  }
+
+  function claseBadge(estado) {
+    switch (String(estado || '').toLowerCase()) {
+      case 'programada': return 'programada';
+      case 'en curso': return 'encurso';
+      case 'finalizada': return 'finalizada';
+      case 'cancelada': return 'cancelada';
+      default: return 'programada';
+    }
+  }
+
+  // ---------- Cargar Capacitaciones ----------
+  function cargarCapacitaciones() {
+    llamarAPI('listarCapacitaciones').then(function (respuesta) {
+      const cont = document.getElementById('contenedorTabla');
+
+      if (!respuesta.success) {
+        cont.innerHTML = '<div class="vacio">No se pudo cargar la información: ' + (respuesta.message || 'error desconocido') + '</div>';
+        return;
       }
-    }
 
-    document.getElementById('btnSalir').addEventListener('click', function() {
-      sessionStorage.removeItem('usuario');
-      window.location.href = 'index.html';
-    });
+      const lista = respuesta.data || [];
 
-    // --- Cargar capacitaciones ---
-    function cargarCapacitaciones() {
-      fetch(API_URL + '?action=listarCapacitaciones')
-        .then(function(r) { return r.json(); })
-        .then(function(respuesta) {
-          const cuerpo = document.getElementById('cuerpoTabla');
+      // KPIs
+      document.getElementById('kpiTotal').textContent = lista.length;
+      document.getElementById('kpiProgramadas').textContent = lista.filter(function (c) { return c['Estado'] === 'Programada'; }).length;
+      document.getElementById('kpiFinalizadas').textContent = lista.filter(function (c) { return c['Estado'] === 'Finalizada'; }).length;
 
-          if (!respuesta.ok) {
-            cuerpo.innerHTML = '<tr><td colspan="7" class="vacio">Error: ' + respuesta.error + '</td></tr>';
-            return;
-          }
+      if (!lista.length) {
+        cont.innerHTML = '<div class="vacio">Todavía no hay capacitaciones registradas.<br>Crea la primera desde "Gestionar Capacitaciones".</div>';
+        return;
+      }
 
-          const filas = respuesta.datos;
+      // Ordena por fecha descendente y toma las últimas 8
+      const ordenadas = lista.slice().sort(function (a, b) {
+        return new Date(b['Fecha']) - new Date(a['Fecha']);
+      }).slice(0, 8);
 
-          if (!filas.length) {
-            cuerpo.innerHTML = '<tr><td colspan="7" class="vacio">Aún no hay capacitaciones. ' + (esAdmin ? 'Crea la primera con el botón de arriba.' : 'Vuelve pronto.') + '</td></tr>';
-            return;
-          }
-
-          cuerpo.innerHTML = filas.map(function(c) {
-            const estadoClase = (c['Estado'] || 'Programada').replace(/\s+/g, '-');
-            const idCap = c['ID Capacitación'];
-
-            let columnaAccion = '';
-            if (!esAdmin) {
-              columnaAccion = '<td>'
-                + '<button class="btn-confirmar" data-id="' + idCap + '" onclick="confirmarAsistencia(this)">Confirmar asistencia</button>'
-                + '</td>';
-            }
-
-            return '<tr>'
-              + '<td class="codigo">' + (c['Código'] || '') + '</td>'
-              + '<td>' + (c['Tema'] || '') + '</td>'
-              + '<td>' + (c['Fecha'] || '') + '</td>'
-              + '<td>' + (c['Instructor'] || '—') + '</td>'
-              + '<td>' + (c['Lugar'] || '—') + '</td>'
-              + '<td><span class="estado ' + estadoClase + '">' + (c['Estado'] || 'Programada') + '</span></td>'
-              + columnaAccion
-              + '</tr>';
-          }).join('');
-        })
-        .catch(function(error) {
-          document.getElementById('cuerpoTabla').innerHTML =
-            '<tr><td colspan="7" class="vacio">Error de conexión: ' + error.message + '</td></tr>';
-        });
-    }
-
-    cargarCapacitaciones();
-
-    // --- Confirmar asistencia (usuarios no-admin) ---
-    function confirmarAsistencia(boton) {
-      const idCapacitacion = boton.dataset.id;
-
-      boton.disabled = true;
-      boton.textContent = 'Enviando...';
-
-      const params = new URLSearchParams({
-        action: 'registrarAsistencia',
-        idCapacitacion: idCapacitacion,
-        documento: usuario['Documento'],
-        nombre: usuario['Nombre Completo'],
-        cargo: usuario['Cargo'] || '',
-        area: usuario['Área'] || '',
-        regional: usuario['Regional'] || ''
+      let filas = '';
+      ordenadas.forEach(function (c) {
+        filas += '<tr>' +
+          '<td>' + (c['Código'] || c['ID Capacitación'] || '') + '</td>' +
+          '<td>' + (c['Tema'] || '') + '</td>' +
+          '<td>' + (c['Instructor'] || '') + '</td>' +
+          '<td>' + formatearFechaCorta(c['Fecha']) + '</td>' +
+          '<td>' + (c['Regional'] || '—') + '</td>' +
+          '<td><span class="badge ' + claseBadge(c['Estado']) + '">' + (c['Estado'] || '—') + '</span></td>' +
+        '</tr>';
       });
 
-      fetch(API_URL + '?' + params.toString())
-        .then(function(r) { return r.json(); })
-        .then(function(respuesta) {
-          if (respuesta.ok) {
-            boton.textContent = '✓ Confirmado';
-            boton.disabled = true;
-          } else {
-            boton.textContent = 'Reintentar';
-            boton.disabled = false;
-            alert('No se pudo confirmar: ' + respuesta.error);
-          }
-        })
-        .catch(function(error) {
-          boton.textContent = 'Reintentar';
-          boton.disabled = false;
-          alert('Error de conexión: ' + error.message);
-        });
-    }
-
-
-    // --- Modal nueva capacitación ---
-    const overlay = document.getElementById('overlay');
-    document.getElementById('btnNueva').addEventListener('click', function() {
-      overlay.classList.add('activo');
+      cont.innerHTML =
+        '<table>' +
+          '<thead><tr>' +
+            '<th>Código</th><th>Tema</th><th>Instructor</th><th>Fecha</th><th>Regional</th><th>Estado</th>' +
+          '</tr></thead>' +
+          '<tbody>' + filas + '</tbody>' +
+        '</table>';
+    }).catch(function (error) {
+      document.getElementById('contenedorTabla').innerHTML =
+        '<div class="vacio">Error de conexión: ' + error.message + '</div>';
     });
-    document.getElementById('btnCancelar').addEventListener('click', function() {
-      overlay.classList.remove('activo');
+  }
+
+  // ---------- Cargar Usuarios (para KPI) ----------
+  function cargarUsuarios() {
+    llamarAPI('listarUsuarios').then(function (respuesta) {
+      if (!respuesta.success) return;
+      const activos = (respuesta.data || []).filter(function (u) { return u['Estado'] === 'Activo'; });
+      document.getElementById('kpiUsuarios').textContent = activos.length;
     });
-    overlay.addEventListener('click', function(e) {
-      if (e.target === overlay) overlay.classList.remove('activo');
-    });
+  }
 
-    document.getElementById('formNueva').addEventListener('submit', function(e) {
-      e.preventDefault();
-
-      const boton = document.getElementById('btnGuardar');
-      const mensaje = document.getElementById('modalMensaje');
-      mensaje.style.display = 'none';
-
-      const params = new URLSearchParams({
-        action: 'crearCapacitacion',
-        codigo: document.getElementById('fCodigo').value.trim(),
-        tema: document.getElementById('fTema').value.trim(),
-        fecha: document.getElementById('fFecha').value,
-        instructor: document.getElementById('fInstructor').value.trim(),
-        lugar: document.getElementById('fLugar').value.trim()
-      });
-
-      boton.disabled = true;
-      boton.textContent = 'Creando...';
-
-      fetch(API_URL + '?' + params.toString())
-        .then(function(r) { return r.json(); })
-        .then(function(respuesta) {
-          boton.disabled = false;
-          boton.textContent = 'Crear';
-
-          if (respuesta.ok) {
-            overlay.classList.remove('activo');
-            document.getElementById('formNueva').reset();
-            cargarCapacitaciones();
-          } else {
-            mensaje.textContent = respuesta.error;
-            mensaje.style.display = 'block';
-          }
-        })
-        .catch(function(error) {
-          boton.disabled = false;
-          boton.textContent = 'Crear';
-          mensaje.textContent = 'Error de conexión: ' + error.message;
-          mensaje.style.display = 'block';
-        });
-    });
-  </script>
+  cargarCapacitaciones();
+  cargarUsuarios();
+</script>
 
 </body>
 </html>
