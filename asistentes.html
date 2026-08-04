@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Asistencia · Sistema de Capacitaciones</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --azul-marca: #1F61A8; --azul-glow: #4FA6FF; --cian: #00E5FF;
+    --fondo-0: #030711; --panel: rgba(12, 22, 41, 0.72); --panel-borde: rgba(79, 166, 255, 0.22);
+    --texto: #EAF2FF; --texto-suave: #7E93B8; --verde: #34D399; --rojo: #FF5D7A; --amarillo: #FBBF24;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100vh; }
+  body { font-family: 'Inter', -apple-system, sans-serif; color: var(--texto); background: var(--fondo-0); min-height: 100vh; position: relative; }
+  .malla {
+    position: fixed; inset: 0;
+    background-image: linear-gradient(rgba(79,166,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(79,166,255,0.06) 1px, transparent 1px);
+    background-size: 42px 42px;
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 80%);
+            mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 30%, transparent 80%);
+    pointer-events: none;
+  }
+  .halo { position: fixed; border-radius: 50%; filter: blur(100px); pointer-events: none; opacity: 0.4; }
+  .halo-1 { width: 520px; height: 520px; top: -200px; left: -160px; background: radial-gradient(circle, rgba(31,97,168,0.55), transparent 70%); }
+  .halo-2 { width: 560px; height: 560px; bottom: -220px; right: -180px; background: radial-gradient(circle, rgba(0,229,255,0.15), transparent 70%); }
+
+  header {
+    position: relative; display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 28px; background: var(--panel); border-bottom: 1px solid var(--panel-borde); backdrop-filter: blur(18px);
+  }
+  .marca { display: flex; align-items: center; gap: 12px; }
+  .volver {
+    display: flex; align-items: center; gap: 6px; text-decoration: none; color: var(--texto-suave);
+    font-size: 13px; font-weight: 600; padding: 8px 12px; border-radius: 8px; transition: color .15s ease, background .15s ease;
+  }
+  .volver:hover { color: #fff; background: rgba(79,166,255,0.08); }
+  .marca-texto { display: flex; flex-direction: column; }
+  .marca-texto .nombre { font-family: 'Space Grotesk', sans-serif; font-weight: 600; font-size: 15px; color: #fff; }
+  .marca-texto .sub { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--texto-suave); }
+  .avatar {
+    width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, var(--azul-glow), var(--cian));
+    display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: #071022; font-size: 13px;
+  }
+
+  .contenedor { position: relative; max-width: 980px; margin: 0 auto; padding: 28px 24px 60px; }
+
+  .tarjeta-cap {
+    padding: 20px 22px; border-radius: 12px; background: var(--panel); border: 1px solid var(--panel-borde);
+    backdrop-filter: blur(18px); margin-bottom: 22px;
+  }
+  .tarjeta-cap .eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--cian); margin: 0 0 6px; }
+  .tarjeta-cap h1 { font-family: 'Space Grotesk', sans-serif; font-size: 20px; margin: 0 0 10px; color: #fff; }
+  .meta-cap { display: flex; gap: 18px; flex-wrap: wrap; font-size: 12.5px; color: var(--texto-suave); }
+  .meta-cap span b { color: var(--texto); font-weight: 600; }
+
+  .panel {
+    padding: 22px; border-radius: 12px; background: var(--panel); border: 1px solid var(--panel-borde);
+    backdrop-filter: blur(18px); margin-bottom: 22px;
+  }
+  .panel h2 { font-family: 'Space Grotesk', sans-serif; font-size: 15.5px; margin: 0 0 16px; color: #fff; }
+
+  .campo { margin-bottom: 15px; }
+  .campo label { display: block; font-size: 12px; font-weight: 600; color: var(--texto-suave); margin-bottom: 6px; }
+  .fila-dos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  input[type="text"] {
+    width: 100%; padding: 11px 12px; border-radius: 8px; border: 1.5px solid rgba(79,166,255,0.18);
+    background: rgba(255,255,255,0.03); color: var(--texto); font-family: 'JetBrains Mono', monospace; font-size: 13.5px;
+  }
+  input:focus { outline: none; border-color: var(--azul-glow); }
+  input::placeholder { color: rgba(126,147,184,0.55); }
+
+  button.principal {
+    padding: 11px 20px; border: none; border-radius: 9px;
+    background: linear-gradient(135deg, var(--azul-marca), var(--azul-glow)); color: #fff;
+    font-family: 'Inter', sans-serif; font-size: 13.5px; font-weight: 700; cursor: pointer;
+    box-shadow: 0 10px 28px -10px rgba(31,97,168,0.65); transition: filter .15s ease, transform .1s ease;
+  }
+  button.principal:hover { filter: brightness(1.1); }
+  button.principal:disabled { opacity: .55; cursor: wait; }
+  button.secundario {
+    padding: 11px 18px; border-radius: 9px; border: 1.5px solid var(--panel-borde);
+    background: rgba(255,255,255,0.03); color: var(--texto); font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer;
+  }
+  button.secundario:hover { border-color: var(--azul-glow); }
+
+  .estado-linea { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--texto-suave); margin-bottom: 16px; flex-wrap: wrap; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 11px; border-radius: 100px; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+  .chip.ok { background: rgba(52,211,153,0.1); color: var(--verde); border: 1px solid rgba(52,211,153,0.28); }
+  .chip.pend { background: rgba(251,191,36,0.1); color: var(--amarillo); border: 1px solid rgba(251,191,36,0.28); }
+
+  .firma-caja {
+    border: 1.5px dashed rgba(79,166,255,0.3); border-radius: 10px; background: rgba(255,255,255,0.02);
+    touch-action: none; width: 100%; height: 160px; cursor: crosshair;
+  }
+  .firma-acciones { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; }
+
+  .mensaje {
+    margin-top: 14px; padding: 10px 13px; border-radius: 8px; font-size: 12.5px; font-weight: 500; display: none; font-family: 'JetBrains Mono', monospace;
+  }
+  .mensaje.error { display: block; background: rgba(255,93,122,0.09); color: var(--rojo); border: 1px solid rgba(255,93,122,0.28); }
+  .mensaje.exito { display: block; background: rgba(52,211,153,0.09); color: var(--verde); border: 1px solid rgba(52,211,153,0.28); }
+
+  table { width: 100%; border-collapse: collapse; }
+  thead th {
+    text-align: left; padding: 10px 14px; font-family: 'JetBrains Mono', monospace; font-size: 10.5px;
+    letter-spacing: .06em; text-transform: uppercase; color: var(--texto-suave); border-bottom: 1px solid var(--panel-borde);
+  }
+  tbody td { padding: 11px 14px; font-size: 13px; border-bottom: 1px solid rgba(79,166,255,0.08); }
+  tbody tr:last-child td { border-bottom: none; }
+  .badge-si { color: var(--verde); font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+  .btn-icono { background: none; border: none; color: var(--texto-suave); cursor: pointer; font-size: 14px; }
+  .btn-icono:hover { color: var(--azul-glow); }
+  .vacio, .cargando { text-align: center; padding: 30px 14px; color: var(--texto-suave); font-size: 13px; }
+
+  @media (max-width: 620px) {
+    .fila-dos { grid-template-columns: 1fr; }
+    thead { display: none; }
+    table, tbody, tr, td { display: block; width: 100%; }
+    tbody tr { padding: 10px 0; border-bottom: 1px solid var(--panel-borde); }
+    tbody td { padding: 3px 14px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="malla"></div>
+<div class="halo halo-1"></div>
+<div class="halo halo-2"></div>
+
+<header>
+  <div class="marca">
+    <a class="volver" href="capacitaciones.html">← Capacitaciones</a>
+    <div class="marca-texto">
+      <span class="nombre">Sucden Servicios</span>
+      <span class="sub">Registro de Asistencia</span>
+    </div>
+  </div>
+  <div class="avatar" id="avatarUsuario">—</div>
+</header>
+
+<div class="contenedor">
+
+  <div class="tarjeta-cap" id="tarjetaCap">
+    <p class="eyebrow">Capacitación</p>
+    <h1 id="capTema">Cargando…</h1>
+    <div class="meta-cap" id="capMeta"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Registrar asistente</h2>
+
+    <div class="estado-linea">
+      <span class="chip pend" id="chipGps">📍 GPS pendiente</span>
+      <span class="chip pend" id="chipDispositivo">📱 Detectando dispositivo…</span>
+    </div>
+
+    <form id="formAsistencia">
+      <div class="fila-dos">
+        <div class="campo">
+          <label for="fDocumento">Documento</label>
+          <input type="text" id="fDocumento" inputmode="numeric" placeholder="Ej: 1020304050" required>
+        </div>
+        <div class="campo">
+          <label for="fNombre">Nombre completo</label>
+          <input type="text" id="fNombre" placeholder="Se autocompleta si el documento existe" required>
+        </div>
+      </div>
+      <div class="fila-dos">
+        <div class="campo">
+          <label for="fCargo">Cargo</label>
+          <input type="text" id="fCargo" placeholder="Ej: Analista">
+        </div>
+        <div class="campo">
+          <label for="fArea">Área / Regional</label>
+          <input type="text" id="fArea" placeholder="Ej: RH — Quindío">
+        </div>
+      </div>
+
+      <div class="campo">
+        <label>Firma</label>
+        <canvas id="lienzoFirma" class="firma-caja"></canvas>
+        <div class="firma-acciones">
+          <button type="button" class="secundario" id="btnLimpiarFirma">Limpiar firma</button>
+        </div>
+      </div>
+
+      <button type="submit" class="principal" id="btnRegistrar" style="width:100%; margin-top:10px;">Registrar asistencia</button>
+      <div id="mensajeForm" class="mensaje"></div>
+    </form>
+  </div>
+
+  <div class="panel">
+    <h2>Asistentes registrados (<span id="contadorAsistentes">0</span>)</h2>
+    <div id="contenedorTabla"><div class="cargando">Cargando asistentes…</div></div>
+  </div>
+
+</div>
+
+<script>
+  // ============================================================
+  // PEGA AQUÍ LA MISMA URL DE TU DESPLIEGUE (idéntica a login.html)
+  // ============================================================
+  const API_URL = "https://script.google.com/macros/s/AKfycby5AviUlXW6hDNvvGWXRdE70C22TZZfGZf-hVKDCJednS513G4F8QN-aKeXUZJBjNNI/exec";
+
+  // ---------- Sesión ----------
+  const token = sessionStorage.getItem('token');
+  const usuarioRaw = sessionStorage.getItem('usuario');
+  if (!token || !usuarioRaw) { window.location.href = 'login.html'; }
+  const usuarioSesion = JSON.parse(usuarioRaw || '{}');
+  document.getElementById('avatarUsuario').textContent = (usuarioSesion['Nombre Completo'] || '?').trim().charAt(0).toUpperCase();
+
+  // ---------- ID de capacitación desde la URL ----------
+  const params = new URLSearchParams(window.location.search);
+  const idCapacitacion = params.get('cap');
+
+  if (!idCapacitacion) {
+    document.getElementById('capTema').textContent = 'No se especificó ninguna capacitación';
+    document.getElementById('capMeta').innerHTML = '<span>Vuelve a <a href="capacitaciones.html" style="color:var(--azul-glow)">Capacitaciones</a> y entra desde el ícono 👥 de una capacitación.</span>';
+  }
+
+  // ---------- Llamada genérica a la API ----------
+  function llamarAPI(accion, datos) {
+    const body = Object.assign({ accion: accion, token: token }, datos || {});
+    return fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(body)
+    }).then(function (r) { return r.json(); })
+      .then(function (respuesta) {
+        if (!respuesta.success && /no autorizado/i.test(respuesta.message || '')) {
+          sessionStorage.removeItem('token');
+          sessionStorage.removeItem('usuario');
+          window.location.href = 'login.html';
+        }
+        return respuesta;
+      });
+  }
+
+  // ---------- Cargar datos de la capacitación ----------
+  function cargarCapacitacion() {
+    if (!idCapacitacion) return;
+    llamarAPI('obtenerCapacitacion', { id: idCapacitacion }).then(function (respuesta) {
+      if (!respuesta.success || !respuesta.data) {
+        document.getElementById('capTema').textContent = 'Capacitación no encontrada';
+        return;
+      }
+      const cap = respuesta.data;
+      document.getElementById('capTema').textContent = cap['Tema'] || '—';
+      const f = cap['Fecha'] ? new Date(cap['Fecha']).toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
+      document.getElementById('capMeta').innerHTML =
+        '<span>📅 <b>' + f + '</b></span>' +
+        '<span>👤 Instructor: <b>' + (cap['Instructor'] || '—') + '</b></span>' +
+        '<span>📍 <b>' + (cap['Lugar'] || cap['Modalidad'] || '—') + '</b></span>' +
+        '<span>🎯 Estado: <b>' + (cap['Estado'] || '—') + '</b></span>';
+    });
+  }
+
+  // ---------- GPS ----------
+  let coordenadasGps = '';
+  function pedirGps() {
+    const chip = document.getElementById('chipGps');
+    if (!navigator.geolocation) {
+      chip.textContent = '📍 GPS no disponible en este navegador';
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      function (pos) {
+        coordenadasGps = pos.coords.latitude.toFixed(6) + ', ' + pos.coords.longitude.toFixed(6);
+        chip.textContent = '📍 Ubicación capturada';
+        chip.className = 'chip ok';
+      },
+      function () {
+        chip.textContent = '📍 Ubicación no autorizada (se registrará sin GPS)';
+      },
+      { enableHighAccuracy: true, timeout: 8000 }
+    );
+  }
+
+  // ---------- Dispositivo ----------
+  const chipDispositivo = document.getElementById('chipDispositivo');
+  const infoDispositivo = navigator.userAgent.slice(0, 60);
+  chipDispositivo.textContent = '📱 ' + (/Mobi/i.test(navigator.userAgent) ? 'Móvil' : 'Escritorio') + ' detectado';
+  chipDispositivo.className = 'chip ok';
+
+  pedirGps();
+
+  // ---------- Autocompletar por documento ----------
+  let usuariosCache = null;
+  document.getElementById('fDocumento').addEventListener('blur', function () {
+    const doc = this.value.trim();
+    if (!doc) return;
+
+    const buscar = function () {
+      const encontrado = usuariosCache.find(function (u) { return String(u['Documento']) === doc; });
+      if (encontrado) {
+        document.getElementById('fNombre').value = encontrado['Nombre Completo'] || '';
+        document.getElementById('fCargo').value = encontrado['Cargo'] || '';
+        document.getElementById('fArea').value = [encontrado['Área'], encontrado['Regional']].filter(Boolean).join(' — ');
+      }
+    };
+
+    if (usuariosCache) { buscar(); return; }
+    llamarAPI('listarUsuarios').then(function (respuesta) {
+      usuariosCache = respuesta.success ? (respuesta.data || []) : [];
+      buscar();
+    });
+  });
+
+  // ---------- Firma (canvas) ----------
+  const canvas = document.getElementById('lienzoFirma');
+  const ctx = canvas.getContext('2d');
+  let dibujando = false;
+  let firmaTieneTrazo = false;
+
+  function ajustarCanvas() {
+    const ratio = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * ratio;
+    canvas.height = rect.height * ratio;
+    ctx.scale(ratio, ratio);
+    ctx.strokeStyle = '#EAF2FF';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+  }
+  ajustarCanvas();
+  window.addEventListener('resize', ajustarCanvas);
+
+  function coordsEvento(e) {
+    const rect = canvas.getBoundingClientRect();
+    const punto = e.touches ? e.touches[0] : e;
+    return { x: punto.clientX - rect.left, y: punto.clientY - rect.top };
+  }
+
+  function iniciarTrazo(e) {
+    dibujando = true;
+    firmaTieneTrazo = true;
+    const p = coordsEvento(e);
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y);
+  }
+  function moverTrazo(e) {
+    if (!dibujando) return;
+    e.preventDefault();
+    const p = coordsEvento(e);
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+  }
+  function terminarTrazo() { dibujando = false; }
+
+  canvas.addEventListener('mousedown', iniciarTrazo);
+  canvas.addEventListener('mousemove', moverTrazo);
+  canvas.addEventListener('mouseup', terminarTrazo);
+  canvas.addEventListener('mouseleave', terminarTrazo);
+  canvas.addEventListener('touchstart', iniciarTrazo);
+  canvas.addEventListener('touchmove', moverTrazo);
+  canvas.addEventListener('touchend', terminarTrazo);
+
+  document.getElementById('btnLimpiarFirma').addEventListener('click', function () {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    firmaTieneTrazo = false;
+  });
+
+  // ---------- Registrar asistencia ----------
+  const form = document.getElementById('formAsistencia');
+  const mensajeForm = document.getElementById('mensajeForm');
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    if (!idCapacitacion) {
+      mensajeForm.className = 'mensaje error';
+      mensajeForm.textContent = 'No hay una capacitación seleccionada.';
+      return;
+    }
+
+    const documento = document.getElementById('fDocumento').value.trim();
+    const nombre = document.getElementById('fNombre').value.trim();
+    if (!documento || !nombre) {
+      mensajeForm.className = 'mensaje error';
+      mensajeForm.textContent = 'Documento y nombre son obligatorios.';
+      return;
+    }
+
+    const btn = document.getElementById('btnRegistrar');
+    btn.disabled = true;
+    btn.textContent = 'Registrando...';
+    mensajeForm.className = 'mensaje'; mensajeForm.textContent = '';
+
+    // Paso 1: si hay firma, subirla primero
+    const subidaFirma = firmaTieneTrazo
+      ? llamarAPI('subirFirma', {
+          base64: canvas.toDataURL('image/png').split(',')[1],
+          idCapacitacion: idCapacitacion,
+          documento: documento
+        }).then(function (r) { return r.success ? r.data.url : ''; })
+      : Promise.resolve('');
+
+    subidaFirma.then(function (urlFirma) {
+      return llamarAPI('registrarAsistencia', {
+        'ID Capacitación': idCapacitacion,
+        'Documento': documento,
+        'Nombre': nombre,
+        'Cargo': document.getElementById('fCargo').value.trim(),
+        'Área': document.getElementById('fArea').value.trim(),
+        'Firma URL': urlFirma,
+        'Ubicación GPS': coordenadasGps,
+        'Dispositivo': infoDispositivo
+      });
+    }).then(function (respuesta) {
+      btn.disabled = false;
+      btn.textContent = 'Registrar asistencia';
+
+      if (respuesta.success) {
+        mensajeForm.className = 'mensaje exito';
+        mensajeForm.textContent = 'Asistencia registrada correctamente.';
+        form.reset();
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        firmaTieneTrazo = false;
+        cargarAsistentes();
+      } else {
+        mensajeForm.className = 'mensaje error';
+        mensajeForm.textContent = respuesta.message || 'No se pudo registrar la asistencia.';
+      }
+    }).catch(function (error) {
+      btn.disabled = false;
+      btn.textContent = 'Registrar asistencia';
+      mensajeForm.className = 'mensaje error';
+      mensajeForm.textContent = 'Error de conexión: ' + error.message;
+    });
+  });
+
+  // ---------- Listado de asistentes ----------
+  function cargarAsistentes() {
+    if (!idCapacitacion) return;
+    llamarAPI('listarAsistencias', { idCapacitacion: idCapacitacion }).then(function (respuesta) {
+      const cont = document.getElementById('contenedorTabla');
+      if (!respuesta.success) {
+        cont.innerHTML = '<div class="vacio">Error al cargar asistentes: ' + (respuesta.message || '') + '</div>';
+        return;
+      }
+      const lista = respuesta.data || [];
+      document.getElementById('contadorAsistentes').textContent = lista.length;
+
+      if (!lista.length) {
+        cont.innerHTML = '<div class="vacio">Todavía no hay asistentes registrados.</div>';
+        return;
+      }
+
+      let filas = '';
+      lista.forEach(function (a) {
+        const horaIngreso = a['Hora Ingreso'] ? new Date(a['Hora Ingreso']).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }) : '—';
+        const horaSalida = a['Hora Salida'] ? new Date(a['Hora Salida']).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }) : '—';
+        filas += '<tr>' +
+          '<td>' + (a['Documento'] || '') + '</td>' +
+          '<td>' + (a['Nombre'] || '') + '</td>' +
+          '<td>' + horaIngreso + '</td>' +
+          '<td>' + horaSalida + '</td>' +
+          '<td>' + (a['Firma URL'] ? '<span class="badge-si">✔ Firmada</span>' : '—') + '</td>' +
+          '<td>' + (a['Hora Salida'] ? '' : '<button class="btn-icono" title="Registrar salida" data-salida="' + a['ID'] + '">🚪 Salida</button>') + '</td>' +
+        '</tr>';
+      });
+
+      cont.innerHTML =
+        '<table><thead><tr><th>Documento</th><th>Nombre</th><th>Ingreso</th><th>Salida</th><th>Firma</th><th></th></tr></thead>' +
+        '<tbody>' + filas + '</tbody></table>';
+
+      cont.querySelectorAll('[data-salida]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          llamarAPI('registrarSalida', { idAsistencia: btn.dataset.salida }).then(function () { cargarAsistentes(); });
+        });
+      });
+    }).catch(function (error) {
+      document.getElementById('contenedorTabla').innerHTML = '<div class="vacio">Error de conexión: ' + error.message + '</div>';
+    });
+  }
+
+  cargarCapacitacion();
+  cargarAsistentes();
+</script>
+
+</body>
+</html>
