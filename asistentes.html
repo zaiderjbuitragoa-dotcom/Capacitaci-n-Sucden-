@@ -202,7 +202,7 @@
     </div>
 
     <!-- ---------- Panel: evidencia fotográfica ---------- -->
-    <div class="panel">
+    <div class="panel" id="panelEvidencia">
       <h2>Evidencia fotográfica</h2>
       <form id="formFoto">
         <div class="campo">
@@ -224,7 +224,7 @@
   </div>
 
   <!-- ---------- Panel: Reporte WhatsApp ---------- -->
-  <div class="panel" style="margin-top:20px;">
+  <div class="panel" id="panelWhatsApp" style="margin-top:20px;">
     <h2>Reporte por WhatsApp</h2>
     <div class="campo">
       <label for="waTelefono">Teléfono destino (con indicativo, ej: 573001234567)</label>
@@ -254,6 +254,16 @@
   if (!token || !usuarioRaw) { window.location.href = 'login.html'; }
   const usuarioActual = JSON.parse(usuarioRaw || '{}');
   document.getElementById('avatarUsuario').textContent = (usuarioActual['Nombre Completo'] || '?').trim().charAt(0).toUpperCase();
+
+  // ---------- Restricción por rol: el Colaborador solo confirma asistencia y firma ----------
+  // Subir evidencia fotográfica y enviar el reporte por WhatsApp son tareas del Admin/Instructor.
+  const ROL_COLABORADOR = 'Colaborador';
+  if (usuarioActual['Rol'] === ROL_COLABORADOR) {
+    document.getElementById('panelEvidencia').style.display = 'none';
+    document.getElementById('panelWhatsApp').style.display = 'none';
+    document.querySelector('.grid-principal').style.gridTemplateColumns = '1fr';
+    document.querySelector('.grid-principal').style.maxWidth = '520px';
+  }
 
   // ---------- ID de capacitación desde la URL ----------
   const params = new URLSearchParams(window.location.search);
