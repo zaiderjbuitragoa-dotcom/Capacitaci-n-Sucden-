@@ -223,6 +223,17 @@
 
   </div>
 
+  <!-- ---------- Panel: Reporte WhatsApp ---------- -->
+  <div class="panel" style="margin-top:20px;">
+    <h2>Reporte por WhatsApp</h2>
+    <div class="campo">
+      <label for="waTelefono">Teléfono destino (con indicativo, ej: 573001234567)</label>
+      <input type="text" id="waTelefono" inputmode="numeric" placeholder="Déjalo vacío para usar el de Configuración">
+    </div>
+    <button type="button" class="principal bloque" id="btnPrepararWA">Generar y enviar reporte</button>
+    <div id="mensajeWA" class="mensaje"></div>
+  </div>
+
   <!-- ---------- Tabla de asistentes ---------- -->
   <div class="panel-tabla">
     <div class="cab"><h2>Asistentes registrados</h2></div>
@@ -552,55 +563,20 @@
     });
   }
 
-  // ---------- Tabla de asistentes ----------
-  function cargarAsistentes() {
+  // ---------- Reporte WhatsApp ----------
+  document.getElementById('btnPrepararWA').addEventListener('click', function () {
+    const mensaje = document.getElementById('mensajeWA');
+    const btn = this;
+
     if (!idCapacitacion) {
-      document.getElementById('contenedorTabla').innerHTML = '<div class="vacio">Selecciona una capacitación desde el listado.</div>';
+      mensaje.className = 'mensaje error';
+      mensaje.textContent = 'No hay una capacitación seleccionada.';
       return;
     }
-    llamarAPI('listarAsistencias', { idCapacitacion: idCapacitacion }).then(function (respuesta) {
-      const cont = document.getElementById('contenedorTabla');
-      if (!respuesta.success) {
-        cont.innerHTML = '<div class="vacio">Error al cargar asistentes.</div>';
-        return;
-      }
-      const lista = respuesta.data || [];
-      if (!lista.length) {
-        cont.innerHTML = '<div class="vacio">Aún no hay asistentes registrados.</div>';
-        return;
-      }
 
-      let filas = '';
-      lista.forEach(function (a) {
-        const salio = !!a['Hora Salida'];
-        filas += '<tr>' +
-          '<td>' + (a['Documento'] || '') + '</td>' +
-          '<td>' + (a['Nombre'] || '') + '</td>' +
-          '<td>' + formatearHora(a['Hora Ingreso']) + '</td>' +
-          '<td>' + (salio ? formatearHora(a['Hora Salida']) : '—') + '</td>' +
-          '<td><span class="badge ' + (salio ? 'salio' : 'dentro') + '">' + (salio ? 'Salió' : 'En sala') + '</span></td>' +
-          '<td>' + (salio ? '' : '<button class="btn-icono" data-salida="' + a['ID'] + '">🚪 Marcar salida</button>') + '</td>' +
-        '</tr>';
-      });
+    const telefono = document.getElementById('waTelefono').value.trim();
 
-      cont.innerHTML =
-        '<table><thead><tr><th>Documento</th><th>Nombre</th><th>Entrada</th><th>Salida</th><th>Estado</th><th></th></tr></thead>' +
-        '<tbody>' + filas + '</tbody></table>';
+    btn.disabled = true;
+    btn.textContent = 'Generando...';
 
-      cont.querySelectorAll('[data-salida]').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          llamarAPI('registrarSalida', { idAsistencia: btn.dataset.salida }).then(function () {
-            cargarAsistentes();
-          });
-        });
-      });
-    });
-  }
-
-  cargarCapacitacion();
-  cargarAsistentes();
-  cargarFotos();
-</script>
-
-</body>
-</html>
+    llamarAPI('prepararReporteWhatsApp', {
