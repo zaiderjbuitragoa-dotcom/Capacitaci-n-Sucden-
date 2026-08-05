@@ -45,57 +45,60 @@
     display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: #071022; font-size: 13px;
   }
 
-  .contenedor { position: relative; max-width: 980px; margin: 0 auto; padding: 28px 24px 60px; }
+  .contenedor { position: relative; max-width: 1180px; margin: 0 auto; padding: 28px 24px 60px; }
 
   .tarjeta-cap {
     padding: 20px 22px; border-radius: 12px; background: var(--panel); border: 1px solid var(--panel-borde);
-    backdrop-filter: blur(18px); margin-bottom: 22px;
+    backdrop-filter: blur(18px); margin-bottom: 24px;
   }
-  .tarjeta-cap .eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--cian); margin: 0 0 6px; }
-  .tarjeta-cap h1 { font-family: 'Space Grotesk', sans-serif; font-size: 20px; margin: 0 0 10px; color: #fff; }
-  .meta-cap { display: flex; gap: 18px; flex-wrap: wrap; font-size: 12.5px; color: var(--texto-suave); }
+  .tarjeta-cap .eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--cian); margin: 0 0 6px; }
+  .tarjeta-cap h1 { font-family: 'Space Grotesk', sans-serif; font-size: 21px; margin: 0 0 10px; color: #fff; }
+  .meta-cap { display: flex; flex-wrap: wrap; gap: 18px; font-size: 12.5px; color: var(--texto-suave); }
   .meta-cap span b { color: var(--texto); font-weight: 600; }
 
+  .grid-principal { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: start; }
+  @media (max-width: 900px) { .grid-principal { grid-template-columns: 1fr; } }
+
   .panel {
-    padding: 22px; border-radius: 12px; background: var(--panel); border: 1px solid var(--panel-borde);
-    backdrop-filter: blur(18px); margin-bottom: 22px;
+    padding: 20px 22px; border-radius: 12px; background: var(--panel); border: 1px solid var(--panel-borde); backdrop-filter: blur(18px);
   }
   .panel h2 { font-family: 'Space Grotesk', sans-serif; font-size: 15.5px; margin: 0 0 16px; color: #fff; }
 
-  .campo { margin-bottom: 15px; }
+  .campo { margin-bottom: 14px; }
   .campo label { display: block; font-size: 12px; font-weight: 600; color: var(--texto-suave); margin-bottom: 6px; }
-  .fila-dos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .fila-doc { display: flex; gap: 8px; }
   input[type="text"] {
     width: 100%; padding: 11px 12px; border-radius: 8px; border: 1.5px solid rgba(79,166,255,0.18);
     background: rgba(255,255,255,0.03); color: var(--texto); font-family: 'JetBrains Mono', monospace; font-size: 13.5px;
   }
+  input[readonly] { opacity: .75; }
   input:focus { outline: none; border-color: var(--azul-glow); }
   input::placeholder { color: rgba(126,147,184,0.55); }
 
   button.principal {
-    padding: 11px 20px; border: none; border-radius: 9px;
+    padding: 11px 18px; border: none; border-radius: 9px;
     background: linear-gradient(135deg, var(--azul-marca), var(--azul-glow)); color: #fff;
     font-family: 'Inter', sans-serif; font-size: 13.5px; font-weight: 700; cursor: pointer;
-    box-shadow: 0 10px 28px -10px rgba(31,97,168,0.65); transition: filter .15s ease, transform .1s ease;
+    box-shadow: 0 10px 28px -10px rgba(31,97,168,0.65); white-space: nowrap;
   }
   button.principal:hover { filter: brightness(1.1); }
   button.principal:disabled { opacity: .55; cursor: wait; }
   button.secundario {
-    padding: 11px 18px; border-radius: 9px; border: 1.5px solid var(--panel-borde);
-    background: rgba(255,255,255,0.03); color: var(--texto); font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer;
+    padding: 10px 16px; border-radius: 8px; border: 1.5px solid var(--panel-borde);
+    background: rgba(255,255,255,0.03); color: var(--texto); font-family: 'Inter', sans-serif; font-size: 12.5px; font-weight: 600; cursor: pointer;
   }
   button.secundario:hover { border-color: var(--azul-glow); }
+  button.bloque { width: 100%; }
 
-  .estado-linea { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--texto-suave); margin-bottom: 16px; flex-wrap: wrap; }
-  .chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 11px; border-radius: 100px; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
-  .chip.ok { background: rgba(52,211,153,0.1); color: var(--verde); border: 1px solid rgba(52,211,153,0.28); }
-  .chip.pend { background: rgba(251,191,36,0.1); color: var(--amarillo); border: 1px solid rgba(251,191,36,0.28); }
+  .estado-linea { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--texto-suave); margin-top: 8px; }
+  .estado-linea.ok { color: var(--verde); }
+  .estado-linea.pendiente { color: var(--amarillo); }
 
-  .firma-caja {
-    border: 1.5px dashed rgba(79,166,255,0.3); border-radius: 10px; background: rgba(255,255,255,0.02);
-    touch-action: none; width: 100%; height: 160px; cursor: crosshair;
+  canvas#firmaPad {
+    width: 100%; height: 150px; border-radius: 8px; border: 1.5px dashed rgba(79,166,255,0.3);
+    background: rgba(255,255,255,0.02); touch-action: none; cursor: crosshair;
   }
-  .firma-acciones { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; }
+  .firma-acciones { display: flex; gap: 8px; margin-top: 8px; }
 
   .mensaje {
     margin-top: 14px; padding: 10px 13px; border-radius: 8px; font-size: 12.5px; font-weight: 500; display: none; font-family: 'JetBrains Mono', monospace;
@@ -103,24 +106,29 @@
   .mensaje.error { display: block; background: rgba(255,93,122,0.09); color: var(--rojo); border: 1px solid rgba(255,93,122,0.28); }
   .mensaje.exito { display: block; background: rgba(52,211,153,0.09); color: var(--verde); border: 1px solid rgba(52,211,153,0.28); }
 
+  .panel-tabla { margin-top: 22px; border-radius: 12px; background: var(--panel); border: 1px solid var(--panel-borde); backdrop-filter: blur(18px); overflow: hidden; }
+  .panel-tabla .cab { padding: 16px 20px; border-bottom: 1px solid var(--panel-borde); display:flex; align-items:center; justify-content:space-between; }
+  .panel-tabla .cab h2 { font-family: 'Space Grotesk', sans-serif; font-size: 15px; margin: 0; color: #fff; }
   table { width: 100%; border-collapse: collapse; }
   thead th {
-    text-align: left; padding: 10px 14px; font-family: 'JetBrains Mono', monospace; font-size: 10.5px;
+    text-align: left; padding: 11px 18px; font-family: 'JetBrains Mono', monospace; font-size: 10.5px;
     letter-spacing: .06em; text-transform: uppercase; color: var(--texto-suave); border-bottom: 1px solid var(--panel-borde);
   }
-  tbody td { padding: 11px 14px; font-size: 13px; border-bottom: 1px solid rgba(79,166,255,0.08); }
+  tbody td { padding: 12px 18px; font-size: 13px; border-bottom: 1px solid rgba(79,166,255,0.08); }
   tbody tr:last-child td { border-bottom: none; }
-  .badge-si { color: var(--verde); font-family: 'JetBrains Mono', monospace; font-size: 11px; }
-  .btn-icono { background: none; border: none; color: var(--texto-suave); cursor: pointer; font-size: 14px; }
-  .btn-icono:hover { color: var(--azul-glow); }
-  .vacio, .cargando { text-align: center; padding: 30px 14px; color: var(--texto-suave); font-size: 13px; }
+  tbody tr:hover { background: rgba(79,166,255,0.04); }
+  .badge { display: inline-block; padding: 4px 10px; border-radius: 100px; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 600; }
+  .badge.dentro { background: rgba(251,191,36,0.12); color: var(--amarillo); border: 1px solid rgba(251,191,36,0.3); }
+  .badge.salio { background: rgba(52,211,153,0.12); color: var(--verde); border: 1px solid rgba(52,211,153,0.3); }
+  .btn-icono { background: none; border: none; color: var(--texto-suave); cursor: pointer; font-size: 13px; padding: 4px 7px; border-radius: 6px; }
+  .btn-icono:hover { color: var(--azul-glow); background: rgba(79,166,255,0.08); }
+  .vacio, .cargando { text-align: center; padding: 30px 20px; color: var(--texto-suave); font-size: 13px; }
 
-  @media (max-width: 620px) {
-    .fila-dos { grid-template-columns: 1fr; }
+  @media (max-width: 560px) {
     thead { display: none; }
     table, tbody, tr, td { display: block; width: 100%; }
     tbody tr { padding: 10px 0; border-bottom: 1px solid var(--panel-borde); }
-    tbody td { padding: 3px 14px; }
+    tbody td { padding: 3px 18px; }
   }
 </style>
 </head>
@@ -143,57 +151,81 @@
 
 <div class="contenedor">
 
-  <div class="tarjeta-cap" id="tarjetaCap">
+  <div class="tarjeta-cap" id="tarjetaCapacitacion">
     <p class="eyebrow">Capacitación</p>
     <h1 id="capTema">Cargando…</h1>
     <div class="meta-cap" id="capMeta"></div>
   </div>
 
-  <div class="panel">
-    <h2>Registrar asistente</h2>
+  <div class="grid-principal">
 
-    <div class="estado-linea">
-      <span class="chip pend" id="chipGps">📍 GPS pendiente</span>
-      <span class="chip pend" id="chipDispositivo">📱 Detectando dispositivo…</span>
+    <!-- ---------- Panel: registrar asistencia ---------- -->
+    <div class="panel">
+      <h2>Registrar asistencia</h2>
+      <form id="formAsistencia">
+        <div class="campo">
+          <label for="aDocumento">Documento</label>
+          <div class="fila-doc">
+            <input type="text" id="aDocumento" inputmode="numeric" placeholder="Número de documento" required>
+            <button type="button" class="secundario" id="btnBuscar">Buscar</button>
+          </div>
+        </div>
+
+        <div class="campo">
+          <label for="aNombre">Nombre</label>
+          <input type="text" id="aNombre" placeholder="Se autocompleta al buscar" readonly>
+        </div>
+
+        <div class="campo">
+          <label for="aCargo">Cargo / Área / Regional</label>
+          <input type="text" id="aCargo" placeholder="Se autocompleta al buscar" readonly>
+        </div>
+
+        <div class="campo">
+          <label>Ubicación GPS</label>
+          <button type="button" class="secundario bloque" id="btnGPS">📍 Capturar ubicación</button>
+          <div class="estado-linea pendiente" id="estadoGPS">Sin capturar</div>
+        </div>
+
+        <div class="campo">
+          <label>Firma</label>
+          <canvas id="firmaPad"></canvas>
+          <div class="firma-acciones">
+            <button type="button" class="secundario" id="btnLimpiarFirma">Limpiar</button>
+          </div>
+          <div class="estado-linea pendiente" id="estadoFirma">Sin firma</div>
+        </div>
+
+        <button type="submit" class="principal bloque" id="btnRegistrar" style="margin-top:6px;">Registrar asistencia</button>
+        <div id="mensajeAsistencia" class="mensaje"></div>
+      </form>
     </div>
 
-    <form id="formAsistencia">
-      <div class="fila-dos">
+    <!-- ---------- Panel: evidencia fotográfica ---------- -->
+    <div class="panel">
+      <h2>Evidencia fotográfica</h2>
+      <form id="formFoto">
         <div class="campo">
-          <label for="fDocumento">Documento</label>
-          <input type="text" id="fDocumento" inputmode="numeric" placeholder="Ej: 1020304050" required>
+          <label for="fotoInput">Foto</label>
+          <input type="file" id="fotoInput" accept="image/*" capture="environment" required>
         </div>
         <div class="campo">
-          <label for="fNombre">Nombre completo</label>
-          <input type="text" id="fNombre" placeholder="Se autocompleta si el documento existe" required>
+          <label for="fotoDescripcion">Descripción</label>
+          <input type="text" id="fotoDescripcion" placeholder="Ej: Registro de asistentes salón 2">
         </div>
-      </div>
-      <div class="fila-dos">
-        <div class="campo">
-          <label for="fCargo">Cargo</label>
-          <input type="text" id="fCargo" placeholder="Ej: Analista">
-        </div>
-        <div class="campo">
-          <label for="fArea">Área / Regional</label>
-          <input type="text" id="fArea" placeholder="Ej: RH — Quindío">
-        </div>
-      </div>
+        <button type="submit" class="principal bloque" id="btnSubirFoto">Subir evidencia</button>
+        <div id="mensajeFoto" class="mensaje"></div>
+      </form>
 
-      <div class="campo">
-        <label>Firma</label>
-        <canvas id="lienzoFirma" class="firma-caja"></canvas>
-        <div class="firma-acciones">
-          <button type="button" class="secundario" id="btnLimpiarFirma">Limpiar firma</button>
-        </div>
-      </div>
+      <h2 style="margin-top:22px;">Fotos subidas</h2>
+      <div id="galeriaFotos" class="cargando">Cargando…</div>
+    </div>
 
-      <button type="submit" class="principal" id="btnRegistrar" style="width:100%; margin-top:10px;">Registrar asistencia</button>
-      <div id="mensajeForm" class="mensaje"></div>
-    </form>
   </div>
 
-  <div class="panel">
-    <h2>Asistentes registrados (<span id="contadorAsistentes">0</span>)</h2>
+  <!-- ---------- Tabla de asistentes ---------- -->
+  <div class="panel-tabla">
+    <div class="cab"><h2>Asistentes registrados</h2></div>
     <div id="contenedorTabla"><div class="cargando">Cargando asistentes…</div></div>
   </div>
 
@@ -209,16 +241,16 @@
   const token = sessionStorage.getItem('token');
   const usuarioRaw = sessionStorage.getItem('usuario');
   if (!token || !usuarioRaw) { window.location.href = 'login.html'; }
-  const usuarioSesion = JSON.parse(usuarioRaw || '{}');
-  document.getElementById('avatarUsuario').textContent = (usuarioSesion['Nombre Completo'] || '?').trim().charAt(0).toUpperCase();
+  const usuarioActual = JSON.parse(usuarioRaw || '{}');
+  document.getElementById('avatarUsuario').textContent = (usuarioActual['Nombre Completo'] || '?').trim().charAt(0).toUpperCase();
 
   // ---------- ID de capacitación desde la URL ----------
   const params = new URLSearchParams(window.location.search);
   const idCapacitacion = params.get('cap');
 
   if (!idCapacitacion) {
-    document.getElementById('capTema').textContent = 'No se especificó ninguna capacitación';
-    document.getElementById('capMeta').innerHTML = '<span>Vuelve a <a href="capacitaciones.html" style="color:var(--azul-glow)">Capacitaciones</a> y entra desde el ícono 👥 de una capacitación.</span>';
+    document.getElementById('capTema').textContent = 'No se especificó una capacitación';
+    document.getElementById('capMeta').innerHTML = '<span>Vuelve a <a href="capacitaciones.html" style="color:var(--azul-glow)">Capacitaciones</a> y entra desde el ícono 👥</span>';
   }
 
   // ---------- Llamada genérica a la API ----------
@@ -239,6 +271,19 @@
       });
   }
 
+  function formatearHora(valor) {
+    if (!valor) return '—';
+    const f = new Date(valor);
+    if (isNaN(f.getTime())) return String(valor);
+    return f.toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' });
+  }
+  function formatearFechaCorta(valor) {
+    if (!valor) return '—';
+    const f = new Date(valor);
+    if (isNaN(f.getTime())) return String(valor);
+    return f.toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' });
+  }
+
   // ---------- Cargar datos de la capacitación ----------
   function cargarCapacitacion() {
     if (!idCapacitacion) return;
@@ -247,73 +292,69 @@
         document.getElementById('capTema').textContent = 'Capacitación no encontrada';
         return;
       }
-      const cap = respuesta.data;
-      document.getElementById('capTema').textContent = cap['Tema'] || '—';
-      const f = cap['Fecha'] ? new Date(cap['Fecha']).toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' }) : '—';
+      const c = respuesta.data;
+      document.getElementById('capTema').textContent = c['Tema'] || '—';
       document.getElementById('capMeta').innerHTML =
-        '<span>📅 <b>' + f + '</b></span>' +
-        '<span>👤 Instructor: <b>' + (cap['Instructor'] || '—') + '</b></span>' +
-        '<span>📍 <b>' + (cap['Lugar'] || cap['Modalidad'] || '—') + '</b></span>' +
-        '<span>🎯 Estado: <b>' + (cap['Estado'] || '—') + '</b></span>';
+        '<span>👤 Instructor: <b>' + (c['Instructor'] || '—') + '</b></span>' +
+        '<span>📅 Fecha: <b>' + formatearFechaCorta(c['Fecha']) + '</b></span>' +
+        '<span>📍 Lugar: <b>' + (c['Lugar'] || '—') + '</b></span>' +
+        '<span>🏷️ Estado: <b>' + (c['Estado'] || '—') + '</b></span>';
     });
   }
 
-  // ---------- GPS ----------
-  let coordenadasGps = '';
-  function pedirGps() {
-    const chip = document.getElementById('chipGps');
-    if (!navigator.geolocation) {
-      chip.textContent = '📍 GPS no disponible en este navegador';
-      return;
-    }
-    navigator.geolocation.getCurrentPosition(
-      function (pos) {
-        coordenadasGps = pos.coords.latitude.toFixed(6) + ', ' + pos.coords.longitude.toFixed(6);
-        chip.textContent = '📍 Ubicación capturada';
-        chip.className = 'chip ok';
-      },
-      function () {
-        chip.textContent = '📍 Ubicación no autorizada (se registrará sin GPS)';
-      },
-      { enableHighAccuracy: true, timeout: 8000 }
-    );
-  }
+  // ---------- Buscar usuario por documento ----------
+  document.getElementById('btnBuscar').addEventListener('click', function () {
+    const documento = document.getElementById('aDocumento').value.trim();
+    if (!documento) return;
+    const btn = this;
+    btn.disabled = true;
+    btn.textContent = 'Buscando...';
 
-  // ---------- Dispositivo ----------
-  const chipDispositivo = document.getElementById('chipDispositivo');
-  const infoDispositivo = navigator.userAgent.slice(0, 60);
-  chipDispositivo.textContent = '📱 ' + (/Mobi/i.test(navigator.userAgent) ? 'Móvil' : 'Escritorio') + ' detectado';
-  chipDispositivo.className = 'chip ok';
+    llamarAPI('buscarUsuario', { documento: documento }).then(function (respuesta) {
+      btn.disabled = false;
+      btn.textContent = 'Buscar';
+      const mensaje = document.getElementById('mensajeAsistencia');
 
-  pedirGps();
-
-  // ---------- Autocompletar por documento ----------
-  let usuariosCache = null;
-  document.getElementById('fDocumento').addEventListener('blur', function () {
-    const doc = this.value.trim();
-    if (!doc) return;
-
-    const buscar = function () {
-      const encontrado = usuariosCache.find(function (u) { return String(u['Documento']) === doc; });
-      if (encontrado) {
-        document.getElementById('fNombre').value = encontrado['Nombre Completo'] || '';
-        document.getElementById('fCargo').value = encontrado['Cargo'] || '';
-        document.getElementById('fArea').value = [encontrado['Área'], encontrado['Regional']].filter(Boolean).join(' — ');
+      if (respuesta.success) {
+        const u = respuesta.data;
+        document.getElementById('aNombre').value = u['Nombre Completo'] || '';
+        document.getElementById('aCargo').value = [u['Cargo'], u['Área'], u['Regional']].filter(Boolean).join(' · ');
+        mensaje.className = 'mensaje';
+        mensaje.textContent = '';
+      } else {
+        document.getElementById('aNombre').value = '';
+        document.getElementById('aCargo').value = '';
+        mensaje.className = 'mensaje error';
+        mensaje.textContent = respuesta.message || 'Usuario no encontrado. Puede registrarse igual con el nombre manual.';
+        document.getElementById('aNombre').removeAttribute('readonly');
       }
-    };
-
-    if (usuariosCache) { buscar(); return; }
-    llamarAPI('listarUsuarios').then(function (respuesta) {
-      usuariosCache = respuesta.success ? (respuesta.data || []) : [];
-      buscar();
     });
   });
 
+  // ---------- GPS ----------
+  let ubicacionGPS = '';
+  document.getElementById('btnGPS').addEventListener('click', function () {
+    const estado = document.getElementById('estadoGPS');
+    if (!navigator.geolocation) {
+      estado.textContent = 'Este dispositivo no soporta geolocalización';
+      return;
+    }
+    estado.textContent = 'Obteniendo ubicación...';
+    navigator.geolocation.getCurrentPosition(function (pos) {
+      ubicacionGPS = pos.coords.latitude.toFixed(6) + ',' + pos.coords.longitude.toFixed(6);
+      estado.className = 'estado-linea ok';
+      estado.textContent = '✅ Ubicación capturada: ' + ubicacionGPS;
+    }, function (err) {
+      estado.className = 'estado-linea pendiente';
+      estado.textContent = 'No se pudo obtener la ubicación (' + err.message + ')';
+    }, { enableHighAccuracy: true, timeout: 10000 });
+  });
+
   // ---------- Firma (canvas) ----------
-  const canvas = document.getElementById('lienzoFirma');
+  const canvas = document.getElementById('firmaPad');
   const ctx = canvas.getContext('2d');
   let dibujando = false;
-  let firmaTieneTrazo = false;
+  let tieneTrazo = false;
 
   function ajustarCanvas() {
     const ratio = window.devicePixelRatio || 1;
@@ -326,159 +367,239 @@
     ctx.lineCap = 'round';
   }
   ajustarCanvas();
-  window.addEventListener('resize', ajustarCanvas);
+  window.addEventListener('resize', function () {
+    const datos = canvas.toDataURL();
+    ajustarCanvas();
+    tieneTrazo = false;
+  });
 
-  function coordsEvento(e) {
+  function coordenadas(evento) {
     const rect = canvas.getBoundingClientRect();
-    const punto = e.touches ? e.touches[0] : e;
+    const punto = evento.touches ? evento.touches[0] : evento;
     return { x: punto.clientX - rect.left, y: punto.clientY - rect.top };
   }
 
   function iniciarTrazo(e) {
     dibujando = true;
-    firmaTieneTrazo = true;
-    const p = coordsEvento(e);
+    const p = coordenadas(e);
     ctx.beginPath();
     ctx.moveTo(p.x, p.y);
+    e.preventDefault();
   }
   function moverTrazo(e) {
     if (!dibujando) return;
-    e.preventDefault();
-    const p = coordsEvento(e);
+    const p = coordenadas(e);
     ctx.lineTo(p.x, p.y);
     ctx.stroke();
+    tieneTrazo = true;
+    e.preventDefault();
   }
   function terminarTrazo() { dibujando = false; }
 
   canvas.addEventListener('mousedown', iniciarTrazo);
   canvas.addEventListener('mousemove', moverTrazo);
-  canvas.addEventListener('mouseup', terminarTrazo);
-  canvas.addEventListener('mouseleave', terminarTrazo);
-  canvas.addEventListener('touchstart', iniciarTrazo);
-  canvas.addEventListener('touchmove', moverTrazo);
+  window.addEventListener('mouseup', terminarTrazo);
+  canvas.addEventListener('touchstart', iniciarTrazo, { passive: false });
+  canvas.addEventListener('touchmove', moverTrazo, { passive: false });
   canvas.addEventListener('touchend', terminarTrazo);
 
   document.getElementById('btnLimpiarFirma').addEventListener('click', function () {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    firmaTieneTrazo = false;
+    tieneTrazo = false;
+    document.getElementById('estadoFirma').className = 'estado-linea pendiente';
+    document.getElementById('estadoFirma').textContent = 'Sin firma';
   });
 
   // ---------- Registrar asistencia ----------
-  const form = document.getElementById('formAsistencia');
-  const mensajeForm = document.getElementById('mensajeForm');
-
-  form.addEventListener('submit', function (e) {
+  document.getElementById('formAsistencia').addEventListener('submit', function (e) {
     e.preventDefault();
 
-    if (!idCapacitacion) {
-      mensajeForm.className = 'mensaje error';
-      mensajeForm.textContent = 'No hay una capacitación seleccionada.';
-      return;
-    }
-
-    const documento = document.getElementById('fDocumento').value.trim();
-    const nombre = document.getElementById('fNombre').value.trim();
-    if (!documento || !nombre) {
-      mensajeForm.className = 'mensaje error';
-      mensajeForm.textContent = 'Documento y nombre son obligatorios.';
-      return;
-    }
-
+    const documento = document.getElementById('aDocumento').value.trim();
+    const nombre = document.getElementById('aNombre').value.trim();
+    const mensaje = document.getElementById('mensajeAsistencia');
     const btn = document.getElementById('btnRegistrar');
+
+    if (!idCapacitacion) {
+      mensaje.className = 'mensaje error';
+      mensaje.textContent = 'No hay una capacitación seleccionada.';
+      return;
+    }
+    if (!documento || !nombre) {
+      mensaje.className = 'mensaje error';
+      mensaje.textContent = 'Busca el documento o escribe el nombre antes de registrar.';
+      return;
+    }
+
     btn.disabled = true;
     btn.textContent = 'Registrando...';
-    mensajeForm.className = 'mensaje'; mensajeForm.textContent = '';
+    mensaje.className = 'mensaje';
+    mensaje.textContent = '';
 
-    // Paso 1: si hay firma, subirla primero
-    const subidaFirma = firmaTieneTrazo
-      ? llamarAPI('subirFirma', {
-          base64: canvas.toDataURL('image/png').split(',')[1],
-          idCapacitacion: idCapacitacion,
-          documento: documento
-        }).then(function (r) { return r.success ? r.data.url : ''; })
-      : Promise.resolve('');
-
-    subidaFirma.then(function (urlFirma) {
-      return llamarAPI('registrarAsistencia', {
+    function continuarRegistro(firmaUrl) {
+      const datosAsistencia = {
         'ID Capacitación': idCapacitacion,
         'Documento': documento,
         'Nombre': nombre,
-        'Cargo': document.getElementById('fCargo').value.trim(),
-        'Área': document.getElementById('fArea').value.trim(),
-        'Firma URL': urlFirma,
-        'Ubicación GPS': coordenadasGps,
-        'Dispositivo': infoDispositivo
-      });
-    }).then(function (respuesta) {
-      btn.disabled = false;
-      btn.textContent = 'Registrar asistencia';
+        'Ubicación GPS': ubicacionGPS,
+        'Dispositivo': navigator.userAgent.substring(0, 120)
+      };
+      if (firmaUrl) datosAsistencia['Firma URL'] = firmaUrl;
 
-      if (respuesta.success) {
-        mensajeForm.className = 'mensaje exito';
-        mensajeForm.textContent = 'Asistencia registrada correctamente.';
-        form.reset();
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        firmaTieneTrazo = false;
-        cargarAsistentes();
-      } else {
-        mensajeForm.className = 'mensaje error';
-        mensajeForm.textContent = respuesta.message || 'No se pudo registrar la asistencia.';
-      }
-    }).catch(function (error) {
-      btn.disabled = false;
-      btn.textContent = 'Registrar asistencia';
-      mensajeForm.className = 'mensaje error';
-      mensajeForm.textContent = 'Error de conexión: ' + error.message;
-    });
+      llamarAPI('registrarAsistencia', datosAsistencia).then(function (respuesta) {
+        btn.disabled = false;
+        btn.textContent = 'Registrar asistencia';
+
+        if (respuesta.success) {
+          mensaje.className = 'mensaje exito';
+          mensaje.textContent = 'Asistencia registrada correctamente.';
+          document.getElementById('formAsistencia').reset();
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          tieneTrazo = false;
+          document.getElementById('estadoFirma').className = 'estado-linea pendiente';
+          document.getElementById('estadoFirma').textContent = 'Sin firma';
+          document.getElementById('estadoGPS').className = 'estado-linea pendiente';
+          document.getElementById('estadoGPS').textContent = 'Sin capturar';
+          ubicacionGPS = '';
+          cargarAsistentes();
+        } else {
+          mensaje.className = 'mensaje error';
+          mensaje.textContent = respuesta.message || 'No se pudo registrar la asistencia.';
+        }
+      }).catch(function (error) {
+        btn.disabled = false;
+        btn.textContent = 'Registrar asistencia';
+        mensaje.className = 'mensaje error';
+        mensaje.textContent = 'Error de conexión: ' + error.message;
+      });
+    }
+
+    if (tieneTrazo) {
+      const base64 = canvas.toDataURL('image/png').split(',')[1];
+      llamarAPI('subirFirma', { base64: base64, idCapacitacion: idCapacitacion, documento: documento })
+        .then(function (respuesta) {
+          continuarRegistro(respuesta.success ? respuesta.data.url : '');
+        });
+    } else {
+      continuarRegistro('');
+    }
   });
 
-  // ---------- Listado de asistentes ----------
-  function cargarAsistentes() {
+  // ---------- Subir evidencia fotográfica ----------
+  document.getElementById('formFoto').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const archivo = document.getElementById('fotoInput').files[0];
+    const mensaje = document.getElementById('mensajeFoto');
+    const btn = document.getElementById('btnSubirFoto');
+
+    if (!idCapacitacion) {
+      mensaje.className = 'mensaje error';
+      mensaje.textContent = 'No hay una capacitación seleccionada.';
+      return;
+    }
+    if (!archivo) return;
+
+    btn.disabled = true;
+    btn.textContent = 'Subiendo...';
+
+    const lector = new FileReader();
+    lector.onload = function () {
+      const base64 = lector.result.split(',')[1];
+      llamarAPI('registrarFoto', {
+        'ID Capacitación': idCapacitacion,
+        base64: base64,
+        mimeType: archivo.type,
+        nombreArchivo: archivo.name,
+        'Descripción': document.getElementById('fotoDescripcion').value.trim(),
+        'Usuario': usuarioActual['Nombre Completo'] || ''
+      }).then(function (respuesta) {
+        btn.disabled = false;
+        btn.textContent = 'Subir evidencia';
+
+        if (respuesta.success) {
+          mensaje.className = 'mensaje exito';
+          mensaje.textContent = 'Foto subida correctamente.';
+          document.getElementById('formFoto').reset();
+          cargarFotos();
+        } else {
+          mensaje.className = 'mensaje error';
+          mensaje.textContent = respuesta.message || 'No se pudo subir la foto.';
+        }
+      }).catch(function (error) {
+        btn.disabled = false;
+        btn.textContent = 'Subir evidencia';
+        mensaje.className = 'mensaje error';
+        mensaje.textContent = 'Error de conexión: ' + error.message;
+      });
+    };
+    lector.readAsDataURL(archivo);
+  });
+
+  // ---------- Galería de fotos ----------
+  function cargarFotos() {
     if (!idCapacitacion) return;
+    llamarAPI('listarFotos', { idCapacitacion: idCapacitacion }).then(function (respuesta) {
+      const cont = document.getElementById('galeriaFotos');
+      if (!respuesta.success || !(respuesta.data || []).length) {
+        cont.innerHTML = '<div class="vacio">Aún no hay fotos subidas.</div>';
+        return;
+      }
+      cont.innerHTML = '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">' +
+        respuesta.data.map(function (f) {
+          return '<a href="' + f['Foto URL'] + '" target="_blank" style="display:block;border-radius:8px;overflow:hidden;border:1px solid var(--panel-borde);aspect-ratio:1;background:rgba(255,255,255,0.03);display:flex;align-items:center;justify-content:center;font-size:20px;">🖼️</a>';
+        }).join('') +
+      '</div>';
+    });
+  }
+
+  // ---------- Tabla de asistentes ----------
+  function cargarAsistentes() {
+    if (!idCapacitacion) {
+      document.getElementById('contenedorTabla').innerHTML = '<div class="vacio">Selecciona una capacitación desde el listado.</div>';
+      return;
+    }
     llamarAPI('listarAsistencias', { idCapacitacion: idCapacitacion }).then(function (respuesta) {
       const cont = document.getElementById('contenedorTabla');
       if (!respuesta.success) {
-        cont.innerHTML = '<div class="vacio">Error al cargar asistentes: ' + (respuesta.message || '') + '</div>';
+        cont.innerHTML = '<div class="vacio">Error al cargar asistentes.</div>';
         return;
       }
       const lista = respuesta.data || [];
-      document.getElementById('contadorAsistentes').textContent = lista.length;
-
       if (!lista.length) {
-        cont.innerHTML = '<div class="vacio">Todavía no hay asistentes registrados.</div>';
+        cont.innerHTML = '<div class="vacio">Aún no hay asistentes registrados.</div>';
         return;
       }
 
       let filas = '';
       lista.forEach(function (a) {
-        const horaIngreso = a['Hora Ingreso'] ? new Date(a['Hora Ingreso']).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }) : '—';
-        const horaSalida = a['Hora Salida'] ? new Date(a['Hora Salida']).toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit' }) : '—';
+        const salio = !!a['Hora Salida'];
         filas += '<tr>' +
           '<td>' + (a['Documento'] || '') + '</td>' +
           '<td>' + (a['Nombre'] || '') + '</td>' +
-          '<td>' + horaIngreso + '</td>' +
-          '<td>' + horaSalida + '</td>' +
-          '<td>' + (a['Firma URL'] ? '<span class="badge-si">✔ Firmada</span>' : '—') + '</td>' +
-          '<td>' + (a['Hora Salida'] ? '' : '<button class="btn-icono" title="Registrar salida" data-salida="' + a['ID'] + '">🚪 Salida</button>') + '</td>' +
+          '<td>' + formatearHora(a['Hora Ingreso']) + '</td>' +
+          '<td>' + (salio ? formatearHora(a['Hora Salida']) : '—') + '</td>' +
+          '<td><span class="badge ' + (salio ? 'salio' : 'dentro') + '">' + (salio ? 'Salió' : 'En sala') + '</span></td>' +
+          '<td>' + (salio ? '' : '<button class="btn-icono" data-salida="' + a['ID'] + '">🚪 Marcar salida</button>') + '</td>' +
         '</tr>';
       });
 
       cont.innerHTML =
-        '<table><thead><tr><th>Documento</th><th>Nombre</th><th>Ingreso</th><th>Salida</th><th>Firma</th><th></th></tr></thead>' +
+        '<table><thead><tr><th>Documento</th><th>Nombre</th><th>Entrada</th><th>Salida</th><th>Estado</th><th></th></tr></thead>' +
         '<tbody>' + filas + '</tbody></table>';
 
       cont.querySelectorAll('[data-salida]').forEach(function (btn) {
         btn.addEventListener('click', function () {
-          llamarAPI('registrarSalida', { idAsistencia: btn.dataset.salida }).then(function () { cargarAsistentes(); });
+          llamarAPI('registrarSalida', { idAsistencia: btn.dataset.salida }).then(function () {
+            cargarAsistentes();
+          });
         });
       });
-    }).catch(function (error) {
-      document.getElementById('contenedorTabla').innerHTML = '<div class="vacio">Error de conexión: ' + error.message + '</div>';
     });
   }
 
   cargarCapacitacion();
   cargarAsistentes();
+  cargarFotos();
 </script>
 
 </body>
