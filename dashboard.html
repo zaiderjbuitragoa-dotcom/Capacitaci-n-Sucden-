@@ -205,7 +205,7 @@
     <h1>Hola, <span id="saludoNombre">—</span></h1>
   </div>
 
-  <div class="kpis">
+  <div class="kpis" id="filaKPIs">
     <div class="kpi acento">
       <div class="icono">📚</div>
       <div class="valor" id="kpiTotal">—</div>
@@ -291,6 +291,7 @@
     document.getElementById('gridAccesos').style.display = 'none';
     document.getElementById('panelUltimas').style.display = 'none';
     document.getElementById('panelMisCapacitaciones').style.display = 'block';
+    document.getElementById('filaKPIs').style.display = 'none';
   }
   document.getElementById('saludoNombre').textContent = (usuario['Nombre Completo'] || '').split(' ')[0] || 'usuario';
   document.getElementById('avatarUsuario').textContent = (usuario['Nombre Completo'] || '?').trim().charAt(0).toUpperCase();
