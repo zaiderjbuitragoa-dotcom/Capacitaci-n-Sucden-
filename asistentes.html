@@ -214,7 +214,7 @@
     </div>
 
     <!-- ---------- Panel: evidencia fotográfica ---------- -->
-    <div class="panel" id="panelEvidencia">
+    <div class="panel" id="panelEvidencia" style="display:none;">
       <h2>Evidencia fotográfica</h2>
       <form id="formFoto">
         <div class="campo">
@@ -267,12 +267,13 @@
   const usuarioActual = JSON.parse(usuarioRaw || '{}');
   document.getElementById('avatarUsuario').textContent = (usuarioActual['Nombre Completo'] || '?').trim().charAt(0).toUpperCase();
 
-  // ---------- Restricción por rol: el Colaborador solo confirma asistencia y firma ----------
-  // Subir evidencia fotográfica y enviar el reporte por WhatsApp son tareas del Admin/Instructor.
-  const ROL_COLABORADOR = 'Colaborador';
-  if (usuarioActual['Rol'] === ROL_COLABORADOR) {
-    document.getElementById('panelEvidencia').style.display = 'none';
-    document.getElementById('panelWhatsApp').style.display = 'none';
+  // ---------- Restricción por rol: la evidencia fotográfica es EXCLUSIVA del Admin ----------
+  // El panel queda oculto por defecto en el HTML (display:none);
+  // solo se muestra aquí si el usuario es Administrador.
+  const ROL_ADMIN = 'Administrador';
+  if (usuarioActual['Rol'] === ROL_ADMIN) {
+    document.getElementById('panelEvidencia').style.display = 'block';
+  } else {
     document.querySelector('.grid-principal').style.gridTemplateColumns = '1fr';
     document.querySelector('.grid-principal').style.maxWidth = '520px';
   }
@@ -602,3 +603,76 @@
     btn.textContent = 'Generando...';
 
     llamarAPI('prepararReporteWhatsApp', {
+      idCapacitacion: idCapacitacion,
+      telefono: telefono
+    }).then(function (respuesta) {
+      btn.disabled = false;
+      btn.textContent = 'Generar y enviar reporte';
+
+      if (respuesta.success) {
+        mensaje.className = 'mensaje exito';
+        mensaje.textContent = 'Reporte generado correctamente.';
+        const datos = respuesta.data || {};
+        const enlace = datos.url || datos.link || datos.enlace || datos.whatsappUrl;
+        if (enlace) window.open(enlace, '_blank');
+      } else {
+        mensaje.className = 'mensaje error';
+        mensaje.textContent = respuesta.message || 'No se pudo generar el reporte.';
+      }
+    }).catch(function (error) {
+      btn.disabled = false;
+      btn.textContent = 'Generar y enviar reporte';
+      mensaje.className = 'mensaje error';
+      mensaje.textContent = 'Error de conexión: ' + error.message;
+    });
+  });
+
+  // ---------- Tabla de asistentes registrados ----------
+  function cargarAsistentes() {
+    if (!idCapacitacion) return;
+    llamarAPI('listarAsistencias', { idCapacitacion: idCapacitacion }).then(function (respuesta) {
+      const cont = document.getElementById('contenedorTabla');
+      const lista = respuesta.data || [];
+
+      if (!respuesta.success || !lista.length) {
+        cont.innerHTML = '<div class="vacio">Aún no hay asistentes registrados.</div>';
+        return;
+      }
+
+      let filas = '';
+      lista.forEach(function (a) {
+        const salioYa = !!a['Hora Salida'];
+        filas += '<tr>' +
+          '<td>' + (a['Nombre'] || '') + '</td>' +
+          '<td>' + (a['Documento'] || '') + '</td>' +
+          '<td>' + formatearHora(a['Hora Entrada']) + '</td>' +
+          '<td>' + formatearHora(a['Hora Salida']) + '</td>' +
+          '<td><span class="badge ' + (salioYa ? 'salio' : 'dentro') + '">' + (salioYa ? 'Salió' : 'En curso') + '</span></td>' +
+          '<td>' + (salioYa ? '' : '<button type="button" class="btn-icono" title="Registrar salida" data-salida="' + a['ID Asistencia'] + '">🚪</button>') + '</td>' +
+        '</tr>';
+      });
+
+      cont.innerHTML =
+        '<table>' +
+          '<thead><tr><th>Nombre</th><th>Documento</th><th>Entrada</th><th>Salida</th><th>Estado</th><th></th></tr></thead>' +
+          '<tbody>' + filas + '</tbody>' +
+        '</table>';
+
+      cont.querySelectorAll('[data-salida]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          btn.disabled = true;
+          llamarAPI('registrarSalida', { idAsistencia: btn.dataset.salida }).then(function () {
+            cargarAsistentes();
+          });
+        });
+      });
+    });
+  }
+
+  // ---------- Carga inicial ----------
+  cargarCapacitacion();
+  cargarFotos();
+  cargarAsistentes();
+</script>
+</body>
+</html>
