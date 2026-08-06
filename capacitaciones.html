@@ -288,9 +288,12 @@
 
 <script>
   // ============================================================
-  // PEGA AQUÍ LA MISMA URL DE TU DESPLIEGUE (idéntica a login.html)
+  // URL DE TU DESPLIEGUE (idéntica en los 4 archivos)
   // ============================================================
   const API_URL = "https://script.google.com/macros/s/AKfycbwdbN8Id17tAXV-sR7H-XW6cfADvLbvXmK22ol7CsvUdeswCaOG5ftvc5RnwEzcDKs/exec";
+
+  // URL base de tu sitio en GitHub Pages, terminada en "/" — usada para generar el QR
+  const BASE_SITE_URL = "https://TU-USUARIO.github.io/TU-REPOSITORIO/";
 
   // ---------- Sesión ----------
   const token = sessionStorage.getItem('token');
@@ -415,6 +418,7 @@
         '<td>' +
           '<button class="btn-icono" title="Editar" data-editar="' + c['ID Capacitación'] + '">✏️</button>' +
           '<button class="btn-icono" title="Ver asistentes" data-asistentes="' + c['ID Capacitación'] + '">👥</button>' +
+          '<button class="btn-icono" title="Código QR" data-qr="' + c['ID Capacitación'] + '">🔗</button>' +
           (['Finalizada', 'Cancelada'].indexOf(c['Estado']) === -1 && !esColaborador
             ? '<button class="btn-icono" title="Marcar como Finalizada" data-finalizar="' + c['ID Capacitación'] + '">✅</button>'
             : '') +
@@ -435,6 +439,9 @@
       btn.addEventListener('click', function () {
         window.location.href = 'asistentes.html?cap=' + encodeURIComponent(btn.dataset.asistentes);
       });
+    });
+    cont.querySelectorAll('[data-qr]').forEach(function (btn) {
+      btn.addEventListener('click', function () { mostrarQR(btn.dataset.qr); });
     });
     cont.querySelectorAll('[data-finalizar]').forEach(function (btn) {
       btn.addEventListener('click', function () { finalizarCapacitacion(btn.dataset.finalizar, btn); });
@@ -462,11 +469,37 @@
       });
   }
 
+  // ---------- Modal de código QR ----------
+  function mostrarQR(id) {
+    const url = BASE_SITE_URL + 'autoregistro.html?cap=' + encodeURIComponent(id);
+    const qrImg = 'https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=' + encodeURIComponent(url);
+
+    const modalQR = document.createElement('div');
+    modalQR.className = 'overlay activo';
+    modalQR.innerHTML =
+      '<div class="modal" style="max-width:340px; text-align:center;">' +
+        '<h2>Código QR de asistencia</h2>' +
+        '<img src="' + qrImg + '" alt="QR" style="width:100%; border-radius:10px; margin-bottom:14px;">' +
+        '<input type="text" readonly value="' + url + '" style="width:100%; margin-bottom:12px; text-align:center; font-size:11px;">' +
+        '<div class="modal-acciones" style="justify-content:center;">' +
+          '<button type="button" class="secundario" id="btnCerrarQR">Cerrar</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(modalQR);
+
+    modalQR.querySelector('#btnCerrarQR').addEventListener('click', function () {
+      document.body.removeChild(modalQR);
+    });
+    modalQR.addEventListener('click', function (e) {
+      if (e.target === modalQR) document.body.removeChild(modalQR);
+    });
+  }
+
   document.getElementById('filtroTexto').addEventListener('input', pintarTabla);
   document.getElementById('filtroEstado').addEventListener('change', pintarTabla);
   document.getElementById('filtroRegional').addEventListener('change', pintarTabla);
 
-  // ---------- Modal ----------
+  // ---------- Modal Crear/Editar ----------
   const overlay = document.getElementById('overlay');
   const form = document.getElementById('formCapacitacion');
   const mensajeModal = document.getElementById('mensajeModal');
