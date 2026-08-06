@@ -228,15 +228,15 @@
     </div>
   </div>
 
-  <div class="accesos">
-    <a class="acceso" href="capacitaciones.html">
+  <div class="accesos" id="gridAccesos">
+    <a class="acceso" id="accesoGestionar" href="capacitaciones.html">
       <div class="icono-caja">📋</div>
       <div>
         <div class="titulo">Gestionar Capacitaciones</div>
         <div class="desc">Crear, editar y programar capacitaciones</div>
       </div>
     </a>
-    <a class="acceso" href="asistentes.html">
+    <a class="acceso" id="accesoAsistencia" href="asistentes.html">
       <div class="icono-caja">🧾</div>
       <div>
         <div class="titulo">Registro de Asistencia</div>
@@ -245,7 +245,16 @@
     </a>
   </div>
 
-  <div class="panel-tabla">
+  <div class="panel-tabla" id="panelMisCapacitaciones" style="display:none; margin-bottom:24px;">
+    <div class="cab">
+      <h2>Capacitaciones disponibles para asistir</h2>
+    </div>
+    <div id="contenedorMisCapacitaciones">
+      <div class="cargando">Cargando…</div>
+    </div>
+  </div>
+
+  <div class="panel-tabla" id="panelUltimas">
     <div class="cab">
       <h2>Últimas capacitaciones</h2>
     </div>
@@ -274,6 +283,15 @@
 
   document.getElementById('nombreUsuario').textContent = usuario['Nombre Completo'] || '—';
   document.getElementById('rolUsuario').textContent = usuario['Rol'] || '—';
+
+  // El Colaborador solo confirma asistencia y firma; no gestiona capacitaciones.
+  const ROL_COLABORADOR = 'Colaborador';
+  const esColaborador = usuario['Rol'] === ROL_COLABORADOR;
+  if (esColaborador) {
+    document.getElementById('gridAccesos').style.display = 'none';
+    document.getElementById('panelUltimas').style.display = 'none';
+    document.getElementById('panelMisCapacitaciones').style.display = 'block';
+  }
   document.getElementById('saludoNombre').textContent = (usuario['Nombre Completo'] || '').split(' ')[0] || 'usuario';
   document.getElementById('avatarUsuario').textContent = (usuario['Nombre Completo'] || '?').trim().charAt(0).toUpperCase();
 
@@ -336,6 +354,10 @@
       document.getElementById('kpiProgramadas').textContent = lista.filter(function (c) { return c['Estado'] === 'Programada'; }).length;
       document.getElementById('kpiFinalizadas').textContent = lista.filter(function (c) { return c['Estado'] === 'Finalizada'; }).length;
 
+      if (esColaborador) {
+        pintarMisCapacitaciones(lista);
+      }
+
       if (!lista.length) {
         cont.innerHTML = '<div class="vacio">Todavía no hay capacitaciones registradas.<br>Crea la primera desde "Gestionar Capacitaciones".</div>';
         return;
@@ -378,6 +400,39 @@
       const activos = (respuesta.data || []).filter(function (u) { return u['Estado'] === 'Activo'; });
       document.getElementById('kpiUsuarios').textContent = activos.length;
     });
+  }
+
+  // ---------- Panel exclusivo del Colaborador: elegir a qué capacitación asistir ----------
+  function pintarMisCapacitaciones(lista) {
+    const cont = document.getElementById('contenedorMisCapacitaciones');
+
+    const disponibles = lista
+      .filter(function (c) { return c['Estado'] === 'Programada' || c['Estado'] === 'En Curso'; })
+      .sort(function (a, b) { return new Date(a['Fecha']) - new Date(b['Fecha']); });
+
+    if (!disponibles.length) {
+      cont.innerHTML = '<div class="vacio">No hay capacitaciones programadas por el momento.</div>';
+      return;
+    }
+
+    let filas = '';
+    disponibles.forEach(function (c) {
+      filas += '<tr>' +
+        '<td>' + (c['Tema'] || '') + '</td>' +
+        '<td>' + (c['Instructor'] || '') + '</td>' +
+        '<td>' + formatearFechaCorta(c['Fecha']) + '</td>' +
+        '<td>' + (c['Lugar'] || c['Regional'] || '—') + '</td>' +
+        '<td><span class="badge ' + claseBadge(c['Estado']) + '">' + (c['Estado'] || '—') + '</span></td>' +
+        '<td><a class="btn-icono" style="font-size:12.5px;font-weight:700;color:var(--azul-glow);text-decoration:none;" ' +
+          'href="asistentes.html?cap=' + encodeURIComponent(c['ID Capacitación']) + '">Ir a registrar →</a></td>' +
+      '</tr>';
+    });
+
+    cont.innerHTML =
+      '<table>' +
+        '<thead><tr><th>Tema</th><th>Instructor</th><th>Fecha</th><th>Lugar</th><th>Estado</th><th></th></tr></thead>' +
+        '<tbody>' + filas + '</tbody>' +
+      '</table>';
   }
 
   cargarCapacitaciones();
