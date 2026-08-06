@@ -258,7 +258,7 @@
 
 <script>
   // ============================================================
-  // PEGA AQUÍ LA MISMA URL DE TU DESPLIEGUE (idéntica a login.html)
+  // PEGA AQUÍ LA MISMA URL DE TU DESPLIEGUE (idéntica a index.html)
   // ============================================================
   const API_URL = "https://script.google.com/macros/s/AKfycbwdbN8Id17tAXV-sR7H-XW6cfADvLbvXmK22ol7CsvUdeswCaOG5ftvc5RnwEzcDKs/exec";
 
@@ -267,7 +267,7 @@
   const usuarioRaw = sessionStorage.getItem('usuario');
 
   if (!token || !usuarioRaw) {
-    window.location.href = 'login.html';
+    window.location.href = 'index.html';
   }
 
   const usuario = JSON.parse(usuarioRaw);
@@ -280,7 +280,7 @@
   document.getElementById('btnSalir').addEventListener('click', function () {
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('usuario');
-    window.location.href = 'login.html';
+    window.location.href = 'index.html';
   });
 
   // ---------- Llamada genérica a la API (con token) ----------
@@ -295,7 +295,7 @@
         if (!respuesta.success && /no autorizado/i.test(respuesta.message || '')) {
           sessionStorage.removeItem('token');
           sessionStorage.removeItem('usuario');
-          window.location.href = 'login.html';
+          window.location.href = 'index.html';
         }
         return respuesta;
       });
