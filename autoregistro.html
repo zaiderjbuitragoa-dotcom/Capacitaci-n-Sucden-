@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Registro de Asistencia · Sucden</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --azul-marca: #1F61A8; --azul-glow: #4FA6FF; --cian: #00E5FF;
+    --fondo-0: #030711; --panel: rgba(12, 22, 41, 0.72); --panel-borde: rgba(79, 166, 255, 0.22);
+    --texto: #EAF2FF; --texto-suave: #7E93B8; --verde: #34D399; --rojo: #FF5D7A; --amarillo: #FBBF24;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100vh; }
+  body {
+    display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px;
+    font-family: 'Inter', -apple-system, sans-serif; color: var(--texto); background: var(--fondo-0); position: relative;
+  }
+  .malla {
+    position: fixed; inset: 0;
+    background-image: linear-gradient(rgba(79,166,255,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(79,166,255,0.07) 1px, transparent 1px);
+    background-size: 42px 42px;
+    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 30%, transparent 80%);
+            mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 30%, transparent 80%);
+    pointer-events: none;
+  }
+  .halo { position: fixed; border-radius: 50%; filter: blur(90px); pointer-events: none; opacity: 0.5; }
+  .halo-1 { width: 460px; height: 460px; top: -160px; left: -140px; background: radial-gradient(circle, rgba(31,97,168,0.55), transparent 70%); }
+  .halo-2 { width: 500px; height: 500px; bottom: -200px; right: -160px; background: radial-gradient(circle, rgba(0,229,255,0.16), transparent 70%); }
+
+  .marco {
+    position: relative; width: 100%; max-width: 460px; padding: 30px 26px 28px;
+    background: var(--panel); border: 1px solid var(--panel-borde); border-radius: 14px;
+    backdrop-filter: blur(18px); box-shadow: 0 30px 70px -25px rgba(0,0,0,0.65);
+    animation: aparecer 0.5s ease both;
+  }
+  @keyframes aparecer { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+  .estado {
+    display: flex; align-items: center; justify-content: center; gap: 7px;
+    font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--texto-suave); margin-bottom: 18px;
+  }
+  .punto { width: 6px; height: 6px; border-radius: 50%; background: var(--verde); box-shadow: 0 0 8px 1px var(--verde); animation: latido 1.8s ease-in-out infinite; }
+  @keyframes latido { 0%,100%{opacity:1;} 50%{opacity:.35;} }
+
+  .eyebrow { text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--cian); margin: 0 0 6px; }
+  h1 { text-align: center; font-family: 'Space Grotesk', sans-serif; font-size: 20px; margin: 0 0 4px; color: #fff; }
+  .subtitulo { text-align: center; font-size: 12.5px; color: var(--texto-suave); margin: 0 0 22px; }
+
+  .tarjeta-info {
+    padding: 14px 16px; border-radius: 10px; background: rgba(79,166,255,0.06); border: 1px solid var(--panel-borde);
+    margin-bottom: 20px; font-size: 12.5px; color: var(--texto-suave);
+  }
+  .tarjeta-info b { color: var(--texto); }
+  .tarjeta-info div { margin-bottom: 3px; }
+  .tarjeta-info div:last-child { margin-bottom: 0; }
+
+  .campo { margin-bottom: 14px; }
+  .campo label { display: block; font-size: 12px; font-weight: 600; color: var(--texto-suave); margin-bottom: 6px; }
+  .fila-doc { display: flex; gap: 8px; }
+  input[type="text"] {
+    width: 100%; padding: 12px 13px; border-radius: 8px; border: 1.5px solid rgba(79,166,255,0.18);
+    background: rgba(255,255,255,0.03); color: var(--texto); font-family: 'JetBrains Mono', monospace; font-size: 14px;
+  }
+  input[readonly] { opacity: .75; }
+  input:focus { outline: none; border-color: var(--azul-glow); box-shadow: 0 0 0 3px rgba(79,166,255,0.15); }
+  input::placeholder { color: rgba(126,147,184,0.55); }
+
+  button.principal {
+    width: 100%; margin-top: 4px; padding: 13px; border: none; border-radius: 9px;
+    background: linear-gradient(135deg, var(--azul-marca), var(--azul-glow)); color: #fff;
+    font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer;
+    box-shadow: 0 10px 28px -10px rgba(31,97,168,0.65);
+  }
+  button.principal:hover { filter: brightness(1.1); }
+  button.principal:disabled { opacity: .55; cursor: wait; }
+  button.secundario {
+    padding: 10px 14px; border-radius: 8px; border: 1.5px solid var(--panel-borde);
+    background: rgba(255,255,255,0.03); color: var(--texto); font-family: 'Inter', sans-serif; font-size: 12.5px; font-weight: 600; cursor: pointer; white-space: nowrap;
+  }
+  button.secundario:hover { border-color: var(--azul-glow); }
+
+  .estado-linea { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--texto-suave); margin-top: 7px; }
+  .estado-linea.ok { color: var(--verde); }
+  .estado-linea.pendiente { color: var(--amarillo); }
+
+  canvas#firmaPad {
+    width: 100%; height: 130px; border-radius: 8px; border: 1.5px dashed rgba(79,166,255,0.3);
+    background: rgba(255,255,255,0.02); touch-action: none; cursor: crosshair;
+  }
+  .firma-acciones { display: flex; gap: 8px; margin-top: 8px; }
+
+  .mensaje {
+    margin-top: 14px; padding: 11px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; display: none; text-align: center;
+  }
+  .mensaje.error { display: block; background: rgba(255,93,122,0.09); color: var(--rojo); border: 1px solid rgba(255,93,122,0.28); }
+  .mensaje.exito { display: block; background: rgba(52,211,153,0.1); color: var(--verde); border: 1px solid rgba(52,211,153,0.3); }
+
+  .pantalla-exito { display: none; text-align: center; padding: 10px 0; }
+  .pantalla-exito.activa { display: block; animation: aparecer 0.4s ease both; }
+  .pantalla-exito .icono-check {
+    width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 16px;
+    background: rgba(52,211,153,0.12); border: 2px solid var(--verde);
+    display: flex; align-items: center; justify-content: center; font-size: 30px;
+  }
+  .pantalla-exito h2 { font-family: 'Space Grotesk', sans-serif; color: #fff; margin: 0 0 6px; }
+  .pantalla-exito p { color: var(--texto-suave); font-size: 13px; margin: 0; }
+
+  .pie { margin-top: 22px; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--texto-suave); letter-spacing: 0.04em; }
+</style>
+</head>
+<body>
+
+<div class="malla"></div>
+<div class="halo halo-1"></div>
+<div class="halo halo-2"></div>
+
+<div class="marco">
+  <div class="estado"><span class="punto"></span>Registro en línea</div>
+  <p class="eyebrow">Sucden Servicios</p>
+  <h1>Registro de Asistencia</h1>
+  <p class="subtitulo" id="subtitulo">Cargando capacitación…</p>
+
+  <div class="tarjeta-info" id="tarjetaInfo" style="display:none;"></div>
+
+  <div id="bloqueFormulario">
+    <form id="formAutoregistro">
+      <div class="campo">
+        <label for="documento">Número de documento</label>
+        <div class="fila-doc">
+          <input type="text" id="documento" inputmode="numeric" placeholder="Tu número de documento" required autofocus>
+          <button type="button" class="secundario" id="btnBuscar">Buscar</button>
+        </div>
+      </div>
+
+      <div class="campo">
+        <label for="nombre">Nombre completo</label>
+        <input type="text" id="nombre" placeholder="Se autocompleta al buscar, o escríbelo" required>
+      </div>
+
+      <div class="campo">
+        <label>Ubicación</label>
+        <button type="button" class="secundario" style="width:100%;" id="btnGPS">📍 Compartir mi ubicación</button>
+        <div class="estado-linea pendiente" id="estadoGPS">Opcional, ayuda a validar tu asistencia</div>
+      </div>
+
+      <div class="campo">
+        <label>Firma</label>
+        <canvas id="firmaPad"></canvas>
+        <div class="firma-acciones">
+          <button type="button" class="secundario" id="btnLimpiarFirma">Limpiar</button>
+        </div>
+      </div>
+
+      <button type="submit" class="principal" id="btnRegistrar" style="margin-top:8px;">Confirmar mi asistencia</button>
+      <div id="mensaje" class="mensaje"></div>
+    </form>
+  </div>
+
+  <div class="pantalla-exito" id="pantallaExito">
+    <div class="icono-check">✅</div>
+    <h2>¡Asistencia registrada!</h2>
+    <p>Gracias por confirmar tu participación. Ya puedes cerrar esta página.</p>
+  </div>
+
+  <p class="pie">Sucden Servicios &middot; Sistema de Capacitaciones</p>
+</div>
+
+<script>
+  // ============================================================
+  // URL DE TU DESPLIEGUE DE APPS SCRIPT (idéntica a la de login.html)
+  // ============================================================
+  const API_URL = "https://script.google.com/macros/s/AKfycbwdbN8Id17tAXV-sR7H-XW6cfADvLbvXmK22ol7CsvUdeswCaOG5ftvc5RnwEzcDKs/exec";
+
+  const params = new URLSearchParams(window.location.search);
+  const idCapacitacion = params.get('cap');
+
+  function llamarAPI(accion, datos) {
+    const body = Object.assign({ accion: accion }, datos || {});
+    return fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(body)
+    }).then(function (r) { return r.json(); });
+  }
+
+  function formatearFechaCorta(valor) {
+    if (!valor) return '—';
+    const f = new Date(valor);
+    if (isNaN(f.getTime())) return String(valor);
+    return f.toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' });
+  }
+
+  if (!idCapacitacion) {
+    document.getElementById('subtitulo').textContent = 'Enlace inválido — falta el código de la capacitación.';
+    document.getElementById('bloqueFormulario').style.display = 'none';
+  } else {
+    llamarAPI('publicObtenerCapacitacion', { id: idCapacitacion }).then(function (respuesta) {
+      if (!respuesta.success || !respuesta.data) {
+        document.getElementById('subtitulo').textContent = 'No se encontró esta capacitación.';
+        document.getElementById('bloqueFormulario').style.display = 'none';
+        return;
+      }
+      const c = respuesta.data;
+      document.getElementById('subtitulo').textContent = 'Confirma tu participación en esta capacitación';
+      const info = document.getElementById('tarjetaInfo');
+      info.style.display = 'block';
+      info.innerHTML =
+        '<div>📚 <b>' + (c['Tema'] || '—') + '</b></div>' +
+        '<div>👤 Instructor: <b>' + (c['Instructor'] || '—') + '</b></div>' +
+        '<div>📅 Fecha: <b>' + formatearFechaCorta(c['Fecha']) + '</b></div>' +
+        (c['Lugar'] ? '<div>📍 Lugar: <b>' + c['Lugar'] + '</b></div>' : '');
+    });
+  }
+
+  // ---------- Buscar por documento ----------
+  document.getElementById('btnBuscar').addEventListener('click', function () {
+    const documento = document.getElementById('documento').value.trim();
+    if (!documento) return;
+    const btn = this;
+    btn.disabled = true;
+    btn.textContent = 'Buscando...';
+
+    llamarAPI('publicBuscarUsuario', { documento: documento }).then(function (respuesta) {
+      btn.disabled = false;
+      btn.textContent = 'Buscar';
+      if (respuesta.success) {
+        document.getElementById('nombre').value = respuesta.data['Nombre Completo'] || '';
+      }
+    });
+  });
+
+  // ---------- GPS ----------
+  let ubicacionGPS = '';
+  document.getElementById('btnGPS').addEventListener('click', function () {
+    const estado = document.getElementById('estadoGPS');
+    if (!navigator.geolocation) {
+      estado.textContent = 'Tu navegador no soporta ubicación';
+      return;
+    }
+    estado.textContent = 'Obteniendo ubicación...';
+    navigator.geolocation.getCurrentPosition(function (pos) {
+      ubicacionGPS = pos.coords.latitude.toFixed(6) + ',' + pos.coords.longitude.toFixed(6);
+      estado.className = 'estado-linea ok';
+      estado.textContent = '✅ Ubicación compartida';
+    }, function () {
+      estado.className = 'estado-linea pendiente';
+      estado.textContent = 'No se pudo obtener tu ubicación (puedes continuar sin ella)';
+    }, { enableHighAccuracy: true, timeout: 10000 });
+  });
+
+  // ---------- Firma ----------
+  const canvas = document.getElementById('firmaPad');
+  const ctx = canvas.getContext('2d');
+  let dibujando = false;
+  let tieneTrazo = false;
+
+  function ajustarCanvas() {
+    const ratio = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * ratio;
+    canvas.height = rect.height * ratio;
+    ctx.scale(ratio, ratio);
+    ctx.strokeStyle = '#EAF2FF';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+  }
+  ajustarCanvas();
+  window.addEventListener('resize', function () { ajustarCanvas(); tieneTrazo = false; });
+
+  function coordenadas(evento) {
+    const rect = canvas.getBoundingClientRect();
+    const punto = evento.touches ? evento.touches[0] : evento;
+    return { x: punto.clientX - rect.left, y: punto.clientY - rect.top };
+  }
+  function iniciarTrazo(e) { dibujando = true; const p = coordenadas(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); e.preventDefault(); }
+  function moverTrazo(e) { if (!dibujando) return; const p = coordenadas(e); ctx.lineTo(p.x, p.y); ctx.stroke(); tieneTrazo = true; e.preventDefault(); }
+  function terminarTrazo() { dibujando = false; }
+
+  canvas.addEventListener('mousedown', iniciarTrazo);
+  canvas.addEventListener('mousemove', moverTrazo);
+  window.addEventListener('mouseup', terminarTrazo);
+  canvas.addEventListener('touchstart', iniciarTrazo, { passive: false });
+  canvas.addEventListener('touchmove', moverTrazo, { passive: false });
+  canvas.addEventListener('touchend', terminarTrazo);
+
+  document.getElementById('btnLimpiarFirma').addEventListener('click', function () {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    tieneTrazo = false;
+  });
+
+  // ---------- Enviar registro ----------
+  document.getElementById('formAutoregistro').addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const documento = document.getElementById('documento').value.trim();
+    const nombre = document.getElementById('nombre').value.trim();
+    const mensaje = document.getElementById('mensaje');
+    const btn = document.getElementById('btnRegistrar');
+
+    if (!idCapacitacion || !documento || !nombre) {
+      mensaje.className = 'mensaje error';
+      mensaje.textContent = 'Completa tu documento y nombre para continuar.';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'Registrando...';
+    mensaje.className = 'mensaje';
+    mensaje.textContent = '';
+
+    function continuarRegistro(firmaUrl) {
+      const datos = {
+        'ID Capacitación': idCapacitacion,
+        'Documento': documento,
+        'Nombre': nombre,
+        'Ubicación GPS': ubicacionGPS,
+        'Dispositivo': navigator.userAgent.substring(0, 120)
+      };
+      if (firmaUrl) datos['Firma URL'] = firmaUrl;
+
+      llamarAPI('publicRegistrarAsistencia', datos).then(function (respuesta) {
+        if (respuesta.success) {
+          document.getElementById('bloqueFormulario').style.display = 'none';
+          document.getElementById('tarjetaInfo').style.display = 'none';
+          document.getElementById('subtitulo').style.display = 'none';
+          document.getElementById('pantallaExito').classList.add('activa');
+        } else {
+          btn.disabled = false;
+          btn.textContent = 'Confirmar mi asistencia';
+          mensaje.className = 'mensaje error';
+          mensaje.textContent = respuesta.message || 'No se pudo registrar tu asistencia.';
+        }
+      }).catch(function (error) {
+        btn.disabled = false;
+        btn.textContent = 'Confirmar mi asistencia';
+        mensaje.className = 'mensaje error';
+        mensaje.textContent = 'Error de conexión: ' + error.message;
+      });
+    }
+
+    if (tieneTrazo) {
+      const base64 = canvas.toDataURL('image/png').split(',')[1];
+      llamarAPI('publicSubirFirma', { base64: base64, idCapacitacion: idCapacitacion, documento: documento })
+        .then(function (respuesta) {
+          continuarRegistro(respuesta.success ? respuesta.data.url : '');
+        });
+    } else {
+      continuarRegistro('');
+    }
+  });
+</script>
+
+</body>
+</html>
