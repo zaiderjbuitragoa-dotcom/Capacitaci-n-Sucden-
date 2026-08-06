@@ -46,6 +46,11 @@
   }
 
   .contenedor { position: relative; max-width: 1180px; margin: 0 auto; padding: 28px 24px 60px; }
+  @media (max-width: 640px) {
+    .contenedor { padding: 18px 14px 40px; }
+    header { padding: 14px 16px; }
+    .tarjeta-cap h1 { font-size: 18px; }
+  }
 
   .tarjeta-cap {
     padding: 20px 22px; border-radius: 12px; background: var(--panel); border: 1px solid var(--panel-borde);
@@ -123,6 +128,13 @@
   .btn-icono { background: none; border: none; color: var(--texto-suave); cursor: pointer; font-size: 13px; padding: 4px 7px; border-radius: 6px; }
   .btn-icono:hover { color: var(--azul-glow); background: rgba(79,166,255,0.08); }
   .vacio, .cargando { text-align: center; padding: 30px 20px; color: var(--texto-suave); font-size: 13px; }
+
+  @media (max-width: 640px) {
+    canvas#firmaPad { height: 130px; }
+    button.principal { font-size: 13.5px; padding: 12px; }
+    .fila-doc { flex-direction: column; }
+    .fila-doc button.secundario { width: 100%; }
+  }
 
   @media (max-width: 560px) {
     thead { display: none; }
