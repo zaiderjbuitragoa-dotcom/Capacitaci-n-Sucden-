@@ -268,8 +268,6 @@
   document.getElementById('avatarUsuario').textContent = (usuarioActual['Nombre Completo'] || '?').trim().charAt(0).toUpperCase();
 
   // ---------- Restricción por rol: la evidencia fotográfica es EXCLUSIVA del Admin ----------
-  // El panel queda oculto por defecto en el HTML (display:none);
-  // solo se muestra aquí si el usuario es Administrador.
   const ROL_ADMIN = 'Administrador';
   if (usuarioActual['Rol'] === ROL_ADMIN) {
     document.getElementById('panelEvidencia').style.display = 'block';
@@ -645,10 +643,10 @@
         filas += '<tr>' +
           '<td>' + (a['Nombre'] || '') + '</td>' +
           '<td>' + (a['Documento'] || '') + '</td>' +
-          '<td>' + formatearHora(a['Hora Entrada']) + '</td>' +
+          '<td>' + formatearHora(a['Hora Ingreso']) + '</td>' +
           '<td>' + formatearHora(a['Hora Salida']) + '</td>' +
-          '<td><span class="badge ' + (salioYa ? 'salio' : 'dentro') + '">' + (salioYa ? 'Salió' : 'En curso') + '</span></td>' +
-          '<td>' + (salioYa ? '' : '<button type="button" class="btn-icono" title="Registrar salida" data-salida="' + a['ID Asistencia'] + '">🚪</button>') + '</td>' +
+          '<td><span class="badge ' + (salioYa ? 'salio' : 'dentro') + '">' + (salioYa ? 'Salió' : 'En sala') + '</span></td>' +
+          '<td>' + (salioYa ? '' : '<button type="button" class="btn-icono" title="Registrar salida" data-salida="' + a['ID'] + '">🚪</button>') + '</td>' +
         '</tr>';
       });
 
