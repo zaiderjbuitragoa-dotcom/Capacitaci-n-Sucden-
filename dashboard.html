@@ -149,8 +149,14 @@
   tbody tr:last-child td { border-bottom: none; }
   tbody tr:hover { background: rgba(79,166,255,0.04); }
 
-  tbody tr.fila-clic { cursor: pointer; }
+  tbody tr.fila-clic {
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
   tbody tr.fila-clic:hover { background: rgba(79,166,255,0.09); }
+  tbody tr.fila-clic:active { background: rgba(79,166,255,0.14); }
 
   .badge {
     display: inline-block; padding: 4px 10px; border-radius: 100px;
@@ -508,11 +514,13 @@
           '<tbody>' + filas + '</tbody>' +
         '</table>';
 
-      // Clic en cualquier fila abre el detalle de esa capacitación
-      cont.querySelectorAll('tr.fila-clic').forEach(function (fila) {
-        fila.addEventListener('click', function () {
-          abrirDetalleCapacitacion(fila.getAttribute('data-id'));
-        });
+      // Clic en cualquier fila abre el detalle de esa capacitación.
+      // Se usa delegación de eventos sobre el contenedor de la tabla: así
+      // funciona sin importar sobre qué elemento interno de la fila (texto,
+      // badge, etc.) haya caído el clic.
+      cont.addEventListener('click', function (e) {
+        const fila = e.target.closest('tr.fila-clic');
+        if (fila) abrirDetalleCapacitacion(fila.getAttribute('data-id'));
       });
     }).catch(function (error) {
       document.getElementById('contenedorTabla').innerHTML =
