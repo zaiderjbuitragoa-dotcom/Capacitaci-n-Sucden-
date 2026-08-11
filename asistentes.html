@@ -171,9 +171,9 @@
 
   <div class="grid-principal">
 
-    <!-- ---------- Panel: registrar asistencia ---------- -->
+    <!-- ---------- Panel: confirmar asistencia ---------- -->
     <div class="panel">
-      <h2>Registrar asistencia</h2>
+      <h2>Confirmar asistencia</h2>
       <form id="formAsistencia">
         <div class="campo">
           <label for="aDocumento">Documento</label>
@@ -208,7 +208,7 @@
           <div class="estado-linea pendiente" id="estadoFirma">Sin firma</div>
         </div>
 
-        <button type="submit" class="principal bloque" id="btnRegistrar" style="margin-top:6px;">Registrar asistencia</button>
+        <button type="submit" class="principal bloque" id="btnRegistrar" style="margin-top:6px;">Confirmar asistencia</button>
         <div id="mensajeAsistencia" class="mensaje"></div>
       </form>
     </div>
@@ -442,7 +442,7 @@
     document.getElementById('estadoFirma').textContent = 'Sin firma';
   });
 
-  // ---------- Registrar asistencia ----------
+  // ---------- Confirmar asistencia ----------
   document.getElementById('formAsistencia').addEventListener('submit', function (e) {
     e.preventDefault();
 
@@ -458,12 +458,12 @@
     }
     if (!documento || !nombre) {
       mensaje.className = 'mensaje error';
-      mensaje.textContent = 'Busca el documento o escribe el nombre antes de registrar.';
+      mensaje.textContent = 'Busca el documento o escribe el nombre antes de confirmar.';
       return;
     }
 
     btn.disabled = true;
-    btn.textContent = 'Registrando...';
+    btn.textContent = 'Confirmando...';
     mensaje.className = 'mensaje';
     mensaje.textContent = '';
 
@@ -479,11 +479,11 @@
 
       llamarAPI('registrarAsistencia', datosAsistencia).then(function (respuesta) {
         btn.disabled = false;
-        btn.textContent = 'Registrar asistencia';
+        btn.textContent = 'Confirmar asistencia';
 
         if (respuesta.success) {
           mensaje.className = 'mensaje exito';
-          mensaje.textContent = 'Asistencia registrada correctamente.';
+          mensaje.textContent = 'Asistencia confirmada correctamente.';
           document.getElementById('formAsistencia').reset();
           ctx.clearRect(0, 0, canvas.width, canvas.height);
           tieneTrazo = false;
@@ -495,11 +495,11 @@
           cargarAsistentes();
         } else {
           mensaje.className = 'mensaje error';
-          mensaje.textContent = respuesta.message || 'No se pudo registrar la asistencia.';
+          mensaje.textContent = respuesta.message || 'No se pudo confirmar la asistencia.';
         }
       }).catch(function (error) {
         btn.disabled = false;
-        btn.textContent = 'Registrar asistencia';
+        btn.textContent = 'Confirmar asistencia';
         mensaje.className = 'mensaje error';
         mensaje.textContent = 'Error de conexión: ' + error.message;
       });
@@ -639,31 +639,20 @@
 
       let filas = '';
       lista.forEach(function (a) {
-        const salioYa = !!a['Hora Salida'];
         filas += '<tr>' +
           '<td>' + (a['Nombre'] || '') + '</td>' +
           '<td>' + (a['Documento'] || '') + '</td>' +
           '<td>' + formatearHora(a['Hora Ingreso']) + '</td>' +
           '<td>' + formatearHora(a['Hora Salida']) + '</td>' +
-          '<td><span class="badge ' + (salioYa ? 'salio' : 'dentro') + '">' + (salioYa ? 'Salió' : 'En sala') + '</span></td>' +
-          '<td>' + (salioYa ? '' : '<button type="button" class="btn-icono" title="Registrar salida" data-salida="' + a['ID'] + '">🚪</button>') + '</td>' +
+          '<td><span class="badge salio">Confirmada</span></td>' +
         '</tr>';
       });
 
       cont.innerHTML =
         '<table>' +
-          '<thead><tr><th>Nombre</th><th>Documento</th><th>Entrada</th><th>Salida</th><th>Estado</th><th></th></tr></thead>' +
+          '<thead><tr><th>Nombre</th><th>Documento</th><th>Hora programada</th><th>Confirmó a las</th><th>Estado</th></tr></thead>' +
           '<tbody>' + filas + '</tbody>' +
         '</table>';
-
-      cont.querySelectorAll('[data-salida]').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          btn.disabled = true;
-          llamarAPI('registrarSalida', { idAsistencia: btn.dataset.salida }).then(function () {
-            cargarAsistentes();
-          });
-        });
-      });
     });
   }
 
