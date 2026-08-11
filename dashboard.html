@@ -410,21 +410,51 @@
     window.location.href = 'login.html';
   });
 
-  // ---------- Llamada genérica a la API (con token) ----------
-  function llamarAPI(accion, datos) {
+  // Pequeña espera entre reintentos (en milisegundos)
+  function esperar(ms) {
+    return new Promise(function (resolve) { setTimeout(resolve, ms); });
+  }
+
+  // ---------- Llamada genérica a la API (con token y reintentos) ----------
+  // Si Apps Script falla de forma intermitente (p. ej. "Falta el parámetro
+  // accion" por un cruce de peticiones, o un error de red puntual), se
+  // reintenta automáticamente hasta 2 veces antes de mostrar error al usuario.
+  function llamarAPI(accion, datos, intentos) {
+    intentos = intentos || 0;
     const body = Object.assign({ accion: accion, token: token }, datos || {});
+
     return fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify(body)
-    }).then(function (r) { return r.json(); })
+    })
+      .then(function (r) { return r.json(); })
       .then(function (respuesta) {
         if (!respuesta.success && /no autorizado/i.test(respuesta.message || '')) {
           sessionStorage.removeItem('token');
           sessionStorage.removeItem('usuario');
           window.location.href = 'login.html';
+          return respuesta;
         }
+
+        // Fallo transitorio típico de Apps Script: reintentar antes de rendirse
+        const esFalloTransitorio = !respuesta.success && /falta el par[aá]metro\s+"?accion"?/i.test(respuesta.message || '');
+        if (esFalloTransitorio && intentos < 2) {
+          return esperar(400 * (intentos + 1)).then(function () {
+            return llamarAPI(accion, datos, intentos + 1);
+          });
+        }
+
         return respuesta;
+      })
+      .catch(function (error) {
+        // Error de red: también se reintenta antes de propagar el error
+        if (intentos < 2) {
+          return esperar(400 * (intentos + 1)).then(function () {
+            return llamarAPI(accion, datos, intentos + 1);
+          });
+        }
+        throw error;
       });
   }
 
@@ -463,7 +493,7 @@
 
   // ---------- Cargar Capacitaciones ----------
   function cargarCapacitaciones() {
-    llamarAPI('listarCapacitaciones').then(function (respuesta) {
+    return llamarAPI('listarCapacitaciones').then(function (respuesta) {
       const cont = document.getElementById('contenedorTabla');
 
       if (!respuesta.success) {
@@ -656,8 +686,11 @@
     if (e.key === 'Escape' && modalFondo.classList.contains('activo')) cerrarModal();
   });
 
-  cargarCapacitaciones();
-  cargarUsuarios();
+  // Se piden una después de la otra (no en paralelo) para evitar que
+  // Apps Script reciba dos peticiones simultáneas y falle de forma intermitente.
+  cargarCapacitaciones().finally(function () {
+    cargarUsuarios();
+  });
 </script>
 
 </body>
