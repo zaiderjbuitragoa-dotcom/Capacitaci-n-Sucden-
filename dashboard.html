@@ -149,6 +149,9 @@
   tbody tr:last-child td { border-bottom: none; }
   tbody tr:hover { background: rgba(79,166,255,0.04); }
 
+  tbody tr.fila-clic { cursor: pointer; }
+  tbody tr.fila-clic:hover { background: rgba(79,166,255,0.09); }
+
   .badge {
     display: inline-block; padding: 4px 10px; border-radius: 100px;
     font-family: 'JetBrains Mono', monospace; font-size: 10.5px; font-weight: 600; letter-spacing: .03em;
@@ -157,6 +160,8 @@
   .badge.encurso { background: rgba(251,191,36,0.12); color: var(--amarillo); border: 1px solid rgba(251,191,36,0.3); }
   .badge.finalizada { background: rgba(52,211,153,0.12); color: var(--verde); border: 1px solid rgba(52,211,153,0.3); }
   .badge.cancelada { background: rgba(255,93,122,0.12); color: var(--rojo); border: 1px solid rgba(255,93,122,0.3); }
+  .badge.si { background: rgba(52,211,153,0.12); color: var(--verde); border: 1px solid rgba(52,211,153,0.3); }
+  .badge.no { background: rgba(255,93,122,0.12); color: var(--rojo); border: 1px solid rgba(255,93,122,0.3); }
 
   .vacio { text-align: center; padding: 40px 20px; color: var(--texto-suave); font-size: 13px; }
   .cargando { text-align: center; padding: 40px 20px; color: var(--texto-suave); font-family: 'JetBrains Mono', monospace; font-size: 12px; }
@@ -172,6 +177,77 @@
     tbody tr { padding: 12px 0; border-bottom: 1px solid var(--panel-borde); }
     tbody td { padding: 4px 20px; }
   }
+
+  /* ---------- Modal detalle de capacitación ---------- */
+  .modal-fondo {
+    display: none; position: fixed; inset: 0; z-index: 100;
+    background: rgba(2, 6, 16, 0.72); backdrop-filter: blur(4px);
+    align-items: flex-start; justify-content: center;
+    padding: 40px 16px; overflow-y: auto;
+  }
+  .modal-fondo.activo { display: flex; }
+  .modal-caja {
+    width: 100%; max-width: 760px;
+    background: var(--fondo-1); border: 1px solid var(--panel-borde); border-radius: 14px;
+    box-shadow: 0 30px 70px -25px rgba(0,0,0,0.75);
+    animation: aparecerModal 0.25s ease both;
+    overflow: hidden;
+  }
+  @keyframes aparecerModal { from { opacity: 0; transform: translateY(10px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+
+  .modal-cab {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    padding: 22px 24px; border-bottom: 1px solid var(--panel-borde);
+    background: rgba(79,166,255,0.05);
+  }
+  .modal-cab .eyebrow {
+    font-family: 'JetBrains Mono', monospace; font-size: 10.5px; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--cian); margin: 0 0 6px;
+  }
+  .modal-cab h2 { font-family: 'Space Grotesk', sans-serif; font-size: 19px; margin: 0; color: #fff; }
+  .modal-cerrar {
+    width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--panel-borde);
+    background: rgba(255,255,255,0.03); color: var(--texto-suave);
+    font-size: 15px; cursor: pointer; flex-shrink: 0; line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color .15s ease, color .15s ease;
+  }
+  .modal-cerrar:hover { border-color: var(--rojo); color: var(--rojo); }
+
+  .modal-cuerpo { padding: 22px 24px 26px; }
+
+  .info-capacitacion {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px 20px;
+    padding: 16px 18px; border-radius: 10px;
+    background: rgba(79,166,255,0.06); border: 1px solid var(--panel-borde);
+    margin-bottom: 22px; font-size: 13px;
+  }
+  .info-capacitacion .item { display: flex; flex-direction: column; gap: 2px; }
+  .info-capacitacion .item .etq {
+    font-family: 'JetBrains Mono', monospace; font-size: 9.5px; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--texto-suave);
+  }
+  .info-capacitacion .item .val { color: var(--texto); font-weight: 600; }
+  @media (max-width: 560px) { .info-capacitacion { grid-template-columns: 1fr; } }
+
+  .subtitulo-lista {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .subtitulo-lista h3 { font-family: 'Space Grotesk', sans-serif; font-size: 14.5px; margin: 0; color: #fff; }
+  .contador-asistentes {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--texto-suave);
+  }
+
+  .tabla-asistentes-envoltura { border-radius: 10px; border: 1px solid var(--panel-borde); overflow: hidden; }
+  .tabla-asistentes-envoltura table { font-size: 12.5px; }
+  .tabla-asistentes-envoltura thead th { padding: 9px 14px; font-size: 9.5px; }
+  .tabla-asistentes-envoltura tbody td { padding: 10px 14px; }
+
+  .ver-firma {
+    color: var(--azul-glow); text-decoration: none; font-weight: 600; font-size: 12px;
+  }
+  .ver-firma:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
@@ -265,6 +341,32 @@
 
 </div>
 
+<!-- ---------- Modal: detalle de capacitación + asistentes ---------- -->
+<div class="modal-fondo" id="modalFondo">
+  <div class="modal-caja">
+    <div class="modal-cab">
+      <div>
+        <p class="eyebrow">Detalle de capacitación</p>
+        <h2 id="modalTema">—</h2>
+      </div>
+      <button class="modal-cerrar" id="modalCerrar" aria-label="Cerrar">✕</button>
+    </div>
+    <div class="modal-cuerpo">
+      <div class="info-capacitacion" id="modalInfo"></div>
+
+      <div class="subtitulo-lista">
+        <h3>Asistentes registrados</h3>
+        <span class="contador-asistentes" id="modalContador"></span>
+      </div>
+      <div class="tabla-asistentes-envoltura">
+        <div id="modalContenedorAsistentes">
+          <div class="cargando">Cargando asistentes…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
   // ============================================================
   // PEGA AQUÍ LA MISMA URL DE TU DESPLIEGUE (idéntica a login.html)
@@ -328,6 +430,13 @@
     return f.toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' });
   }
 
+  function formatearFechaHora(valor) {
+    if (!valor) return '—';
+    const f = new Date(valor);
+    if (isNaN(f.getTime())) return String(valor);
+    return f.toLocaleString('es-CO', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+  }
+
   function claseBadge(estado) {
     switch (String(estado || '').toLowerCase()) {
       case 'programada': return 'programada';
@@ -337,6 +446,14 @@
       default: return 'programada';
     }
   }
+
+  function escaparHTML(texto) {
+    return String(texto == null ? '' : texto)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  // Guardamos la última lista cargada para poder abrir el detalle sin volver a pedirla
+  let capacitacionesCache = [];
 
   // ---------- Cargar Capacitaciones ----------
   function cargarCapacitaciones() {
@@ -349,6 +466,7 @@
       }
 
       const lista = respuesta.data || [];
+      capacitacionesCache = lista;
 
       // KPIs
       document.getElementById('kpiTotal').textContent = lista.length;
@@ -371,13 +489,14 @@
 
       let filas = '';
       ordenadas.forEach(function (c) {
-        filas += '<tr>' +
-          '<td>' + (c['Código'] || c['ID Capacitación'] || '') + '</td>' +
-          '<td>' + (c['Tema'] || '') + '</td>' +
-          '<td>' + (c['Instructor'] || '') + '</td>' +
+        const idCap = c['ID Capacitación'] || c['Código'] || '';
+        filas += '<tr class="fila-clic" data-id="' + escaparHTML(idCap) + '">' +
+          '<td>' + escaparHTML(c['Código'] || c['ID Capacitación'] || '') + '</td>' +
+          '<td>' + escaparHTML(c['Tema'] || '') + '</td>' +
+          '<td>' + escaparHTML(c['Instructor'] || '') + '</td>' +
           '<td>' + formatearFechaCorta(c['Fecha']) + '</td>' +
-          '<td>' + (c['Regional'] || '—') + '</td>' +
-          '<td><span class="badge ' + claseBadge(c['Estado']) + '">' + (c['Estado'] || '—') + '</span></td>' +
+          '<td>' + escaparHTML(c['Regional'] || '—') + '</td>' +
+          '<td><span class="badge ' + claseBadge(c['Estado']) + '">' + escaparHTML(c['Estado'] || '—') + '</span></td>' +
         '</tr>';
       });
 
@@ -388,6 +507,13 @@
           '</tr></thead>' +
           '<tbody>' + filas + '</tbody>' +
         '</table>';
+
+      // Clic en cualquier fila abre el detalle de esa capacitación
+      cont.querySelectorAll('tr.fila-clic').forEach(function (fila) {
+        fila.addEventListener('click', function () {
+          abrirDetalleCapacitacion(fila.getAttribute('data-id'));
+        });
+      });
     }).catch(function (error) {
       document.getElementById('contenedorTabla').innerHTML =
         '<div class="vacio">Error de conexión: ' + error.message + '</div>';
@@ -419,11 +545,11 @@
     let filas = '';
     disponibles.forEach(function (c) {
       filas += '<tr>' +
-        '<td>' + (c['Tema'] || '') + '</td>' +
-        '<td>' + (c['Instructor'] || '') + '</td>' +
+        '<td>' + escaparHTML(c['Tema'] || '') + '</td>' +
+        '<td>' + escaparHTML(c['Instructor'] || '') + '</td>' +
         '<td>' + formatearFechaCorta(c['Fecha']) + '</td>' +
-        '<td>' + (c['Lugar'] || c['Regional'] || '—') + '</td>' +
-        '<td><span class="badge ' + claseBadge(c['Estado']) + '">' + (c['Estado'] || '—') + '</span></td>' +
+        '<td>' + escaparHTML(c['Lugar'] || c['Regional'] || '—') + '</td>' +
+        '<td><span class="badge ' + claseBadge(c['Estado']) + '">' + escaparHTML(c['Estado'] || '—') + '</span></td>' +
         '<td><a class="btn-icono" style="font-size:12.5px;font-weight:700;color:var(--azul-glow);text-decoration:none;" ' +
           'href="asistentes.html?cap=' + encodeURIComponent(c['ID Capacitación']) + '">Ir a registrar →</a></td>' +
       '</tr>';
@@ -435,6 +561,92 @@
         '<tbody>' + filas + '</tbody>' +
       '</table>';
   }
+
+  // ============================================================
+  // Modal: detalle de capacitación + asistentes registrados
+  // ============================================================
+  const modalFondo = document.getElementById('modalFondo');
+
+  function abrirDetalleCapacitacion(idCapacitacion) {
+    const c = capacitacionesCache.find(function (item) {
+      return (item['ID Capacitación'] || item['Código']) === idCapacitacion;
+    }) || {};
+
+    // Encabezado e info general
+    document.getElementById('modalTema').textContent = c['Tema'] || 'Capacitación';
+    document.getElementById('modalInfo').innerHTML =
+      '<div class="item"><span class="etq">Código</span><span class="val">' + escaparHTML(c['Código'] || idCapacitacion) + '</span></div>' +
+      '<div class="item"><span class="etq">Instructor</span><span class="val">' + escaparHTML(c['Instructor'] || '—') + '</span></div>' +
+      '<div class="item"><span class="etq">Fecha</span><span class="val">' + formatearFechaCorta(c['Fecha']) + '</span></div>' +
+      '<div class="item"><span class="etq">Regional</span><span class="val">' + escaparHTML(c['Regional'] || '—') + '</span></div>' +
+      '<div class="item"><span class="etq">Lugar</span><span class="val">' + escaparHTML(c['Lugar'] || '—') + '</span></div>' +
+      '<div class="item"><span class="etq">Estado</span><span class="val"><span class="badge ' + claseBadge(c['Estado']) + '">' + escaparHTML(c['Estado'] || '—') + '</span></span></div>';
+
+    document.getElementById('modalContador').textContent = '';
+    document.getElementById('modalContenedorAsistentes').innerHTML = '<div class="cargando">Cargando asistentes…</div>';
+
+    modalFondo.classList.add('activo');
+    document.body.style.overflow = 'hidden';
+
+    // Trae los asistentes registrados a esta capacitación.
+    // Ajusta el nombre de la acción/parámetro si tu Apps Script usa otro.
+    llamarAPI('listarAsistencias', { idCapacitacion: idCapacitacion }).then(function (respuesta) {
+      const cont = document.getElementById('modalContenedorAsistentes');
+
+      if (!respuesta.success) {
+        cont.innerHTML = '<div class="vacio">No se pudo cargar la lista de asistentes: ' + escaparHTML(respuesta.message || 'error desconocido') + '</div>';
+        return;
+      }
+
+      const asistentes = respuesta.data || [];
+      document.getElementById('modalContador').textContent = asistentes.length + (asistentes.length === 1 ? ' asistente' : ' asistentes');
+
+      if (!asistentes.length) {
+        cont.innerHTML = '<div class="vacio">Nadie se ha registrado todavía a esta capacitación.</div>';
+        return;
+      }
+
+      let filas = '';
+      asistentes.forEach(function (a) {
+        const confirmo = String(a['Confirmó Asistencia'] || '').toLowerCase() === 'sí' || String(a['Confirmó Asistencia'] || '').toLowerCase() === 'si';
+        filas += '<tr>' +
+          '<td>' + escaparHTML(a['Nombre'] || '') + '</td>' +
+          '<td>' + escaparHTML(a['Documento'] || '') + '</td>' +
+          '<td>' + escaparHTML(a['Cargo'] || '—') + '</td>' +
+          '<td>' + escaparHTML(a['Área'] || a['Area'] || '—') + '</td>' +
+          '<td>' + escaparHTML(a['Regional'] || '—') + '</td>' +
+          '<td>' + formatearFechaHora(a['Hora Ingreso']) + '</td>' +
+          '<td>' + formatearFechaHora(a['Hora Salida']) + '</td>' +
+          '<td><span class="badge ' + (confirmo ? 'si' : 'no') + '">' + escaparHTML(a['Confirmó Asistencia'] || '—') + '</span></td>' +
+          '<td>' + (a['Firma URL'] ? '<a class="ver-firma" href="' + escaparHTML(a['Firma URL']) + '" target="_blank" rel="noopener">Ver firma</a>' : '—') + '</td>' +
+        '</tr>';
+      });
+
+      cont.innerHTML =
+        '<table>' +
+          '<thead><tr>' +
+            '<th>Nombre</th><th>Documento</th><th>Cargo</th><th>Área</th><th>Regional</th><th>Ingreso</th><th>Salida</th><th>Confirmó</th><th>Firma</th>' +
+          '</tr></thead>' +
+          '<tbody>' + filas + '</tbody>' +
+        '</table>';
+    }).catch(function (error) {
+      document.getElementById('modalContenedorAsistentes').innerHTML =
+        '<div class="vacio">Error de conexión: ' + escaparHTML(error.message) + '</div>';
+    });
+  }
+
+  function cerrarModal() {
+    modalFondo.classList.remove('activo');
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('modalCerrar').addEventListener('click', cerrarModal);
+  modalFondo.addEventListener('click', function (e) {
+    if (e.target === modalFondo) cerrarModal();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && modalFondo.classList.contains('activo')) cerrarModal();
+  });
 
   cargarCapacitaciones();
   cargarUsuarios();
