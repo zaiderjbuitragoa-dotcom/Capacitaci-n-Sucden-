@@ -61,8 +61,7 @@
   .campo { margin-bottom: 14px; }
   .campo label { display: block; font-size: 12px; font-weight: 600; color: var(--texto-suave); margin-bottom: 6px; }
   .fila-doc { display: flex; gap: 8px; }
-  .fila-dos { display: flex; gap: 10px; }
-  .fila-dos .campo { flex: 1; margin-bottom: 0; }
+  .fila-tres { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
   input[type="text"] {
     width: 100%; padding: 12px 13px; border-radius: 8px; border: 1.5px solid rgba(79,166,255,0.18);
     background: rgba(255,255,255,0.03); color: var(--texto); font-family: 'JetBrains Mono', monospace; font-size: 14px;
@@ -112,6 +111,10 @@
   .pantalla-exito p { color: var(--texto-suave); font-size: 13px; margin: 0; }
 
   .pie { margin-top: 22px; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--texto-suave); letter-spacing: 0.04em; }
+
+  @media (max-width: 400px) {
+    .fila-tres { grid-template-columns: 1fr; }
+  }
 </style>
 </head>
 <body>
@@ -143,19 +146,18 @@
         <input type="text" id="nombre" placeholder="Se autocompleta al buscar, o escríbelo" required>
       </div>
 
-      <div class="campo">
-        <label for="cargo">Cargo</label>
-        <input type="text" id="cargo" placeholder="Ej: Analista, Supervisor...">
-      </div>
-
-      <div class="fila-dos">
+      <div class="fila-tres">
+        <div class="campo">
+          <label for="cargo">Cargo</label>
+          <input type="text" id="cargo" placeholder="Ej: Analista">
+        </div>
         <div class="campo">
           <label for="area">Área</label>
-          <input type="text" id="area" placeholder="Ej: Logística">
+          <input type="text" id="area" placeholder="Ej: RH">
         </div>
         <div class="campo">
           <label for="regional">Regional</label>
-          <input type="text" id="regional" placeholder="Ej: Bogotá">
+          <input type="text" id="regional" placeholder="Ej: Quindío">
         </div>
       </div>
 
@@ -246,12 +248,11 @@
       btn.disabled = false;
       btn.textContent = 'Buscar';
       if (respuesta.success) {
-        document.getElementById('nombre').value = respuesta.data['Nombre Completo'] || '';
-        // Autocompletar también Cargo, Área y Regional si el API los devuelve,
-        // pero dejando el campo editable por si el dato no existe o hay que corregirlo.
-        if (respuesta.data['Cargo']) document.getElementById('cargo').value = respuesta.data['Cargo'];
-        if (respuesta.data['Área'] || respuesta.data['Area']) document.getElementById('area').value = respuesta.data['Área'] || respuesta.data['Area'];
-        if (respuesta.data['Regional']) document.getElementById('regional').value = respuesta.data['Regional'];
+        const u = respuesta.data;
+        document.getElementById('nombre').value = u['Nombre Completo'] || '';
+        document.getElementById('cargo').value = u['Cargo'] || '';
+        document.getElementById('area').value = u['Área'] || '';
+        document.getElementById('regional').value = u['Regional'] || '';
       }
     });
   });
@@ -321,9 +322,6 @@
 
     const documento = document.getElementById('documento').value.trim();
     const nombre = document.getElementById('nombre').value.trim();
-    const cargo = document.getElementById('cargo').value.trim();
-    const area = document.getElementById('area').value.trim();
-    const regional = document.getElementById('regional').value.trim();
     const mensaje = document.getElementById('mensaje');
     const btn = document.getElementById('btnRegistrar');
 
@@ -343,9 +341,9 @@
         'ID Capacitación': idCapacitacion,
         'Documento': documento,
         'Nombre': nombre,
-        'Cargo': cargo,
-        'Área': area,
-        'Regional': regional,
+        'Cargo': document.getElementById('cargo').value.trim(),
+        'Área': document.getElementById('area').value.trim(),
+        'Regional': document.getElementById('regional').value.trim(),
         'Ubicación GPS': ubicacionGPS,
         'Dispositivo': navigator.userAgent.substring(0, 120)
       };
@@ -382,7 +380,6 @@
     }
   });
 </script>
-
 
 </body>
 </html>
